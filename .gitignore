@@ -1,1 +1,5 @@
 _env/*
+.pytest_cache/*
+_test.ipynb
+
+vanilla/__pycache__/*
