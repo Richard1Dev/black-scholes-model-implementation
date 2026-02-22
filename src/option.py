@@ -54,7 +54,7 @@ class EuropeanOption(ABC):
         self.T = maturity
 
     def _tau(self, time):
-        return np.maximum(self._tau(time), 1e-12)
+        return np.maximum(self.T - time, 1e-12)
 
     def _d1(self, spot, time, rate, sigma):
         tau = self._tau(time)
