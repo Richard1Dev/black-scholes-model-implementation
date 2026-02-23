@@ -2,6 +2,7 @@ this_filename = '''src/underlying.py'''
 declare_import = False
 import numpy as np
 
+
 class GeometricBrownianMotion:
     def __init__(self, spot, drift, sigma, maturity, runs, mesh, mesh_ratio=1, random_seed=None):
         self.spot = spot
@@ -22,6 +23,7 @@ class GeometricBrownianMotion:
         log_paths = np.cumsum(increments, axis=1)
         log_paths = np.hstack([np.zeros((runs, 1)), log_paths])
         self.paths = self.spot * np.exp(log_paths)
+
 
 if __name__ == '__main__':
     print(f'Running {this_filename}...')

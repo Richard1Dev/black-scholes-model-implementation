@@ -5,27 +5,58 @@ import numpy as np
 from scipy.stats import norm
 
 
-class Position:
+
+class Option(ABC):
+
+    @abstractmethod
+    def payoff(self, spot): raise NotImplementedError
+
+    @abstractmethod
+    def price(self, spot, time, rate, sigma): raise NotImplementedError
+
+    @abstractmethod
+    def delta(self, spot, time, rate, sigma): raise NotImplementedError
+
+    @abstractmethod
+    def gamma(self, spot, time, rate, sigma): raise NotImplementedError
+
+    @abstractmethod
+    def vega(self, spot, time, rate, sigma): raise NotImplementedError
+
+    @abstractmethod
+    def theta(self, spot, time, rate, sigma): raise NotImplementedError
+
+    def __add__(self, other):
+        return ComboOption([(self, 1.0)]) + other
+
+    def __sub__(self, other):
+        return ComboOption([(self, 1.0)]) - other
+
+    def __mul__(self, scalar):
+        return ComboOption([(self, scalar)])
+
+    __rmul__ = __mul__
+
+
+
+class ComboOption(Option):
+
     def __init__(self, components=None):
         self.components = components or []
 
-    def add(self, instrument, weight=1.0):
-        self.components.append((instrument, weight))
-        return self
-
     def __add__(self, other):
-        if isinstance(other, Position):
-            return Position(self.components + other.components)
-        return Position(self.components + [(other, 1.0)])
+        if isinstance(other, ComboOption):
+            return ComboOption(self.components + other.components)
+        return ComboOption(self.components + [(other, 1.0)])
 
     def __sub__(self, other):
-        if isinstance(other, Position):
+        if isinstance(other, ComboOption):
             neg = [(inst, -w) for inst, w in other.components]
-            return Position(self.components + neg)
-        return Position(self.components + [(other, -1.0)])
+            return ComboOption(self.components + neg)
+        return ComboOption(self.components + [(other, -1.0)])
 
     def __mul__(self, scalar):
-        return Position([(inst, scalar*w) for inst, w in self.components])
+        return ComboOption([(inst, scalar*w) for inst, w in self.components])
 
     __rmul__ = __mul__
 
@@ -48,7 +79,9 @@ class Position:
         return sum(w * inst.theta(spot, time, rate, sigma) for inst, w in self.components)
 
 
-class EuropeanOption(ABC):
+
+class VanillaOption(Option, ABC):
+
     def __init__(self, strike, maturity):
         self.K = strike
         self.T = maturity
@@ -70,43 +103,9 @@ class EuropeanOption(ABC):
     def implied_volatility(self, spot, time, rate, sigma):
         raise NotImplementedError
 
-    @abstractmethod
-    def payoff(self, spot):
-        raise NotImplementedError
-
-    @abstractmethod
-    def price(self, spot, time, rate, sigma):
-        raise NotImplementedError
-
-    @abstractmethod
-    def delta(self, spot, time, rate, sigma):
-        raise NotImplementedError
-
-    @abstractmethod
-    def gamma(self, spot, time, rate, sigma):
-        raise NotImplementedError
-
-    @abstractmethod
-    def vega(self, spot, time, rate, sigma):
-        raise NotImplementedError
-
-    @abstractmethod
-    def theta(self, spot, time, rate, sigma):
-        raise NotImplementedError
-    
-    def __mul__(self, scalar):
-        return Position([(self, scalar)])
-
-    __rmul__ = __mul__
-
-    def __add__(self, other):
-        return Position([(self, 1.0)]) + other
-
-    def __sub__(self, other):
-        return Position([(self, 1.0)]) - other
 
 
-class CallOption(EuropeanOption):
+class CallOption(VanillaOption):
     
     def payoff(self, spot):
         return np.maximum(spot - self.K, 0.0)
@@ -135,7 +134,8 @@ class CallOption(EuropeanOption):
         return -(((spot*norm.pdf(d1)*sigma) / (2*np.sqrt(tau))) + (rate*self.K*np.exp(-rate*tau)*norm.cdf(d2)))
 
 
-class PutOption(EuropeanOption):
+
+class PutOption(VanillaOption):
     
     def payoff(self, spot):
         return np.maximum(self.K - spot, 0.0)
@@ -162,6 +162,7 @@ class PutOption(EuropeanOption):
         d1 = self._d1(spot, time, rate, sigma)
         d2 = self._d2(d1, time, sigma)
         return -(((spot*norm.pdf(d1)*sigma) / (2*np.sqrt(tau))) - (rate*self.K*np.exp(-rate*tau)*norm.cdf(-d2)))
+
 
 
 if __name__ == '__main__':
