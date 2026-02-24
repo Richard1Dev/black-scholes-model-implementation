@@ -1,7 +1,78 @@
 this_filename = '''src/delta_hedge.py'''
 declare_import = False
 import numpy as np
+import matplotlib.pyplot as plt
 
+
+
+class MarketState:
+    
+    def __init__(self, runs, steps, maturity):
+        self.runs = runs
+        self.steps = steps
+        length = steps + 1
+        shape = (runs, length)
+
+        self.time = np.linspace(0, maturity, length)
+
+        self.cash = np.zeros(shape)
+        self.underlying = np.zeros(shape)
+        self.option = np.zeros(shape)
+        self.true_delta = np.zeros(shape)
+        self.approx_delta = np.zeros(shape)
+        self.gamma = np.zeros(shape)
+
+        self.pnl = np.zeros(runs)
+
+
+
+class DeltaHedgingEngine:
+
+    def __init__(self, option, model, steps_threshold=1000):
+        self.option = option
+        self.model = model
+        self.s_threshold = steps_threshold
+
+    def run(self, rate, sigma, runs, mesh, random_seed=None):
+        if random_seed is not None:
+            np.random.seed(random_seed)
+
+        maturity = self.option.T
+        temp = int(round(maturity * (1/mesh)))
+        mesh_multiplier = int(self.s_threshold // temp) + 1
+        steps = mesh_multiplier * temp
+        length = steps + 1
+        dt = maturity / steps
+
+        data = MarketState(runs, steps, maturity)
+        data.underlying = self.model.simulate(maturity, runs, dt, random_seed)
+        data.option = self.option.price(data.underlying, data.time, rate, sigma)
+        data.true_delta = self.option.delta(data.underlying, data.time, rate, sigma)
+        data.gamma = self.option.gamma(data.underlying, data.time, rate, sigma)
+
+        old_delta = data.true_delta[:, 0]
+        data.approx_delta[:, 0] = old_delta
+        data.cash[:, 0] = -data.option[:, 0] + data.true_delta[:, 0]*data.underlying[:, 0]
+
+        for j in range(1, length):
+
+            data.cash[:, j] = np.exp(rate*dt)*data.cash[:, j-1]
+
+            if j % mesh_multiplier:
+                data.approx_delta[:, j] = old_delta
+            else:
+                data.approx_delta[:, j] = data.true_delta[:, j]
+                data.cash[:, j] += (data.true_delta[:, j] - old_delta)*data.underlying[:, j]
+                old_delta = data.true_delta[:, j]
+        
+        data.cash[:, -1] = np.exp(rate*dt)*data.cash[:, -2]
+        data.pnl[:] = data.option[:, -1] - old_delta*data.underlying[:, -1] + data.cash[:, -1]
+
+        return data
+
+
+
+_ = '''
 def delta_hedge(underlying, call, rate):
     assert underlying.maturity == call.T
     paths = underlying.paths
@@ -26,8 +97,6 @@ def delta_hedge(underlying, call, rate):
     pnl = portfolio - cost
     return pnl
 
-
-
     # note: bs is risk neutral (Q-measure), but the stock is allowed to be mu (P-measure)
     #initial conditions:
     #       portfolio = 0
@@ -45,104 +114,20 @@ def delta_hedge(underlying, call, rate):
     #       invy = +option_{j+1} -delta_{j+1}*shares_{j+1}
     #at t = T
     #       cash = cash_T
-    #       invy = +option_T -delta_{\hat{T}}*shares_T
+    #       invy = +option_T -delta_{hat{T}}*shares_T
     #    close the position! i.e liquidate invy
-    #       liquidate invy cash gain = max(S-K,0) -delta_{\hat{T}}*shares_T
-    #       cash = cash_T + max(S-K,0) -delta_{\hat{T}}*shares_T
+    #       liquidate invy cash gain = max(S-K,0) -delta_{hat{T}}*shares_T
+    #       cash = cash_T + max(S-K,0) -delta_{hat{T}}*shares_T
     # since we took a loan at the start and the value of our invy should grow at the same rate, the liquidation at the end ought to cancel out
     # expect final cash to be 0
 
     #portfolio = cash_0 + (V-DS) where cash_0 = -(V-DS)
 
-
-
-class MarketState:
-    #hold S paths, V paths, D paths for plotting
-    # be vectorised so it hold pnl mean/var/histogram
-
-    def __init__(self, runs, steps, maturity):
-        self.runs = runs
-        self.steps = steps
-        self.time = np.linspace(0, maturity, steps+1) # 1*steps
-        shape = (runs, steps+1)
-        self.spot = np.zeros(shape)
-        self.option = np.zeros(shape)
-        self.true_delta = np.zeros(shape)
-        self.approx_delta = np.zeros(shape)
-        self.cash = np.zeros(shape) #????
-        self.portfolio = np.zeros(shape) #????V-D*S
-        self.pnl = np.zeros(shape) # 1*runs
-
-
-
-    time = np.linspace(0, underlying.maturity, n_steps_plus_one)
-
-    delta = call.delta(paths[:, 0], 0, rate, sigma)
-    option_value = call.price(paths[:, 0], 0, rate, sigma)
-
-    stock_position = delta
-    cash_account = option_value - stock_position * paths[:, 0]
-
-    pnl_series = np.zeros((n_paths, n_steps_plus_one))
-
-# len = terminal / mesh
-# N = T/dt
-# want N1 N2... N1 = T/dt (hedge mesh) and N2 = k*N1 (simulation mesh)
-# shape <----> length
-# [0.000, 0.001, 0.002]
-# 
-class DeltaHedgingEngine:
-    # produces S,V,Delta,cash,pnl
-
-    def __init__(self, option, model):
-        self.option = option
-        self.model = model
-        self.state = None
-
-    def run(self, rate, sigma, runs, mesh, mesh_multiplier=100, random_seed=None):
-        # runs the sim and populated the data. returns None (stateful) #this is the actual delta hedging (seeds the info)
-        maturity = self.option.T
-        if random_seed is not None:
-            np.random.seed(random_seed)
-        temp = int(round(maturity / mesh))
-        hedge_mesh = maturity / temp
-        length = mesh_multiplier * temp
-        sim_mesh = maturity / length
-        data = MarketState(runs, length, maturity)
-        data.spot = self.model.simulate(maturity, runs, sim_mesh, random_seed)
-        time = 0
-        spot = data.spot[:, time]
-        data.option[:, 0] = self.option.price(spot, time, rate, sigma)
-        data.true_delta[:, 0] = self.option.delta(spot, time, rate, sigma)
-        self.pnl[:, 0] = 0
-        pass
-
-    
-    delta = call.delta(spot, 0, rate, sigma)
-    cost = call.price(spot, 0, rate, sigma) - delta*spot
-    for j in range(1, n_steps):
-        t = j*dt
-        spot = paths[:, j]
-        cost *= np.exp(rate*dt)
-        new_delta = call.delta(spot, t, rate, sigma)
-        cost -= (new_delta - delta)*spot
-        delta = new_delta
-    cost *= np.exp(rate*dt)
-    spot = paths[:, n_steps]
-    portfolio = call.payoff(spot) - delta*spot
-    pnl = portfolio - cost
-    return pnl
-
-    def path(self, i=0):
-        return {
-            #'S': self.gbm.S[i],
-            #'V': self.V[i],
-            #'delta': self.delta[i]
-        }
     
     #plot singluar path method
     #mean/var method
     #plot pnl histogram method
+'''
 
 
 
