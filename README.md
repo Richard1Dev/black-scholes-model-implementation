@@ -1,24 +1,112 @@
 # Black-Scholes Model Implementation
 
+A mathematical and computational implementation of the Black–Scholes model for European option pricing, including derivation sketches, closed-form solutions, Greeks computation, simulation of underlying paths, and numerical delta hedging verification. This project bridges continuous-time financial theory and practical discrete-time implementation.
 
-### Overview: Pricing and Discrete Delta Hedging Simulation
 
-Option pricing plays a crucial role in modern financial markets, providing a framework for evaluating financial derivatives such as stock options, interest rate options, and commodities. The Black-Scholes model, developed in 1973 by Fischer Black, Myron Scholes, and Robert C. Merton, revolutionised the pricing of European-style options by providing an analytical solution to the problem of option valuation under certain assumptions. This model is widely regarded as one of the foundational theories in financial mathematics. This model is implemented in this project.
+### Overview
+
+The **Black–Scholes model (1973)** provides an analytical framework for pricing European-style options under no-arbitrage assumptions. Developed by Fischer Black, Myron Scholes, and Robert C. Merton, it remains foundational in quantitative finance.
 
 
 ### Project aims:
 
 - Document the key Black-Scholes assumptions.
-- Provide a loose derivation of famous results such as the Black-Scholes Equation, Feynman-Kac Formula, Black-Scholes Formula, and closed-form solutions of vanilla options.
+- Sketch derivations of famous results:
+    - the Black-Scholes Equation,
+    - Feynman-Kac Formula,
+    - Black-Scholes Formula,
+    - and closed-form solutions of vanilla options.
 - Implement vanilla option pricing and sensitivities (Greeks) in Python.
 - Provide key visualisation such as sample underlying paths and the option pricing function.
-- Carry out delta hedging in order to numerically verify the Black-Scholes Equation.
+- Conduct discrete delta hedging experiments.
+- Analyse portfolio error under discrete trading.
+
+The aim is to connect theory, computation, and financial interpretation in a unified framework.
+
+
+### Project Structure
+
+```
+root/
+│
+├── figures/
+│   └── ...
+│
+├── notebooks/
+│   └── results.ipynb
+│
+├── src
+│   ├── delta_hedge.py
+│   ├── option.py
+│   └── underlying.py
+│
+├── .gitattributes
+├── .gitignore
+└── README.md
+```
+
+
+### Implementation
+
+- Methods for pricing and Greeks within option classes.
+- Addition operator overriding to instantiate linear combinations of options. E.g. butterfly spread.
+- Geometric Brownian Motion simulation.
+- Discrete delta hedging engine.
+- PnL replication error analysis.
+- Visualisations:
+    - Sample price paths
+    - Payoff functions
+    - Option price surfaces
+    - Hedging error convergence
+
+
+### Numerical Experiments
+
+The project investigates:
+
+- Convergence of discrete delta hedging to continuous hedging
+- Impact of:
+    - Not hedging at all (control)
+    - Rebalancing frequency
+    - Drift
+- Distribution of hedging PnL
+
+As trading frequency increases, hedging error converges in probability toward zero, numerically validating the Black–Scholes Equation.
+
+
+### Skills Demonstrated
+
+- Stochastic calculus (Ito processes)
+- Risk-neutral valuation
+- PDE methods (parabolic equations)
+- Measure change techniques
+- Numerical simulation (Monte Carlo)
+- Quantitative risk decomposition
+- Python scientific computing (NumPy, SciPy, Matplotlib)
+
+
+### Conclusion and Project Outcomes
+
+
+
+---
+
+### Future Extensions
+
+- Dividend-paying assets
+- Implied volatility solver
+- Local volatility models
+- Stochastic volatility (e.g., Heston)
+- Transaction costs in hedging
+- American option pricing (finite difference methods)
 
 
 
 ---
 
 # Theory
+
+Derivations are found in the appendix.
 
 
 ### Assumptions
@@ -32,7 +120,7 @@ The Black–Scholes model relies on the following key assumptions:
     - **Log-Normal Prices:** Asset prices are log-normally distributed.
     - **Constant Drift:** Emphasising again that the drift is constant and known.
     - **Constant Volatility:** Emphasising again that the volatility is constant and known.
-- **Continuous Trading:** The asset can be traded continuously in any quantity.
+- **Continuous Trading:** The asset can be traded infinitely often, and in any quantity.
 - **European Options:** Options can only be exercised at expiration.
 - **No Dividends:** The asset does not pay dividends during the option's life.
 
@@ -43,13 +131,24 @@ The Black–Scholes model relies on the following key assumptions:
 - $S_t$ is the price of the asset at time $t$.
 - $\mu$ is the drift.
 - $\sigma$ is the volatility.
-- $W_t$ is a standard Brownian motion or Wiener process.
 - $V = V(S,t)$ is the pricing function for an option with a payoff $\Phi = \Phi(S)$.
+- $T$ is the maturity (years).
+- $K$ is the strike price.
+- $N(\cdot)$ is the cdf of the standard Gaussian distribution $\mathcal{N}(0,1)$.
+
+
+### Hedging Analysis
+
+
+
+---
+
+# Appendix
 
 
 ### Black-Scholes Equation
 
-Setting the underlying price
+Let $W_t$ denote a standard Brownian motion or Wiener process. Setting the underlying price
 
 $$
 S_T = S_t \exp \Big( (\mu - \frac{1}{2} \sigma^2)(T-t) + \sigma (W_T - W_t) \Big)
@@ -245,24 +344,8 @@ $$
 \Delta = \frac{\partial V}{\partial S} \qquad \Gamma = \frac{\partial^2 V}{\partial S^2} \qquad \mathcal{V} = \frac{\partial V}{\partial \sigma} \qquad \Theta = \frac{\partial V}{\partial t}
 $$
 
-are known as "the Greeks" and are the primary option sensitivities. These quantities measure the local sensitivity of the option value $V(S,t)$ to changes in the underlying price $S$, volatility $\sigma$, and time $t$. Beyond their computational definitions, they characterise the structure of risk in the Black-Scholes framework. Together, they decompose option risk into directional (delta), curvature (gamma), volatility (vega), and temporal (theta) components, forming the basis of practical risk management and hedging strategies. The Greeks therefore characterise both the local behaviour of the pricing function and the stability of the replication strategy. They provide the link between the continuous-time theory and the discrete-time approximations.
+are known as "the Greeks" and are the primary option sensitivities. These quantities measure the local sensitivity of the option value $V(S,t)$ to changes in the underlying price $S$, volatility $\sigma$, and time $t$. Beyond their computational definitions, they characterise the structure of risk in the Black-Scholes framework. Together, they decompose option risk into directional (delta), curvature (gamma), volatility (vega), and temporal (theta) components, forming the basis of practical risk management and hedging strategies. The Greeks therefore characterise both the local behaviour of the pricing function and the stability of the replication strategy. They provide the link between the continuous-time theory and the discrete-time approximations. Deriving the Greeks are left as an exercise for brevity.
 
-Delta represents the linear exposure of the option to movements in the underlying asset. In the replication argument, it coincides with the number of shares held in the self-financing portfolio. Maintaining a position of $\Delta_t$ shares eliminates instantaneous diffusion risk, rendering the portfolio locally riskless. For a European call,
-
-$$
-\Delta = N(d_1)
-$$
-
-with $0 < N(d_1) < 1$, i.e. the delta of a call lies strictly between zero and one. It increases monotonically with $S$, approaching zero deep out-of-the-money and one deep in-the-money. Thus delta quantifies both directional exposure and the hedge ratio required for local replication. The symmetry,
-
-$$
-\Delta_{\mathrm{call}} - \Delta_{\mathrm{put}} = 1
-\qquad 
-\Delta_{\mathrm{put}} = \Delta_{\mathrm{call}} - 1
-$$
-
-follows from put-call parity.
-
-
+---
 
 
