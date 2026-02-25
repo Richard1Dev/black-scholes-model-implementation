@@ -54,6 +54,14 @@ $$
 
 ### Greeks
 
+$$
+\langle S \rangle
+$$
+
+$$
+\langle S \rangle_t
+$$
+
 
 
 
