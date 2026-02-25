@@ -90,7 +90,7 @@ $$
 which, after plugging in $\mathrm{d} \Pi$ on the left and $\Pi$ on the right, yields
 
 $$
-\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^{2} S^{2} \frac{\partial^{2}V}{\partial S^{2}} + rS \frac{\partial V}{\partial S} - rV = 0 \qquad\quad V(T,S) = \Phi(S)
+\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^{2} S^{2} \frac{\partial^{2}V}{\partial S^{2}} + rS \frac{\partial V}{\partial S} - rV = 0 \qquad\quad V(S,T) = \Phi(S)
 $$
 
 which is otherwise known as the Black-Scholes Equation.
@@ -120,7 +120,7 @@ $$
 otherwise known as the heat equation. The solution is
 
 $$
-I_1 = \frac{\exp(a\ln (S)+b\tau)}{\sqrt{2\pi \sigma^2 \tau}} \int_{-\infty}^{\infty} \exp\left(\frac{-(\ln (S)-w)^2}{2\sigma^2 \tau} - aw\right) \Phi(e^w) \,\mathrm{d}w
+I_1 = \frac{S^a e^{b\tau}}{\sqrt{2\pi \sigma^2 \tau}} \int_{-\infty}^{\infty} \exp\left(\frac{-(\ln (S)-w)^2}{2\sigma^2 \tau} - aw\right) \Phi(e^w) \mathrm{d}w
 $$
 
 by convoluting the transformed payoff function with the Guassian heat kernal.
@@ -137,20 +137,17 @@ $$
 \mathrm{d}U = e^{-rt} (-rV\mathrm{d}t + \mathrm{d}V)
 $$
 
-and ito's lemma (again)
+and ito's lemma (again... along with using the $\mathbb{Q}$ model for $S$)
 
 $$
 \mathrm{d}V
-= \frac{\partial V}{\partial t} \mathrm{d}t + \frac{\partial V}{\partial S} \mathrm{d}S + \frac{1}{2} \frac{\partial^{2}V}{\partial S^{2}} \mathrm{d} \langle S \rangle \\
-= \frac{\partial V}{\partial t} \mathrm{d}t + \frac{\partial V}{\partial S} \left( r S_t\mathrm{d}t + \sigma S_t \mathrm{d}W_t^\mathbb{Q} \right) + \frac{1}{2} \sigma^2 S^2 \frac{\partial^{2}V}{\partial S^{2}} \mathrm{d} t \\
-= \left( \frac{\partial V}{\partial t} + \frac{1}{2} \sigma^{2} S^{2} \frac{\partial^{2}V}{\partial S^{2}} + rS \frac{\partial V}{\partial S} \right) \mathrm{d}t + \sigma S \frac{\partial V}{\partial S} \mathrm{d}W^\mathbb{Q} \\
-= rV\mathrm{d}t + \sigma S \frac{\partial V}{\partial S} \mathrm{d}W^\mathbb{Q}
+= \left( \frac{\partial V}{\partial t} + \frac{1}{2} \sigma^{2} S^{2} \frac{\partial^{2}V}{\partial S^{2}} + rS \frac{\partial V}{\partial S} \right) \mathrm{d}t + \sigma S \frac{\partial V}{\partial S} \mathrm{d}W^\mathbb{Q}
 $$
 
 we find that
 
 $$
-\mathrm{d}U = e^{-rt} \sigma S \frac{\partial V}{\partial S} \, \mathrm{d}W^\mathbb{Q}
+\mathrm{d}U = e^{-rt} \sigma S \frac{\partial V}{\partial S} \mathrm{d}W^\mathbb{Q}
 $$
 
 is a $\mathbb{Q}$-martingale. Taking the conditional expectation yields
@@ -162,28 +159,28 @@ $$
 otherwise known as the Feynman-Kac formula. Taking
 
 $$
-\ln (S_T) \sim \mathcal{N} \Big( \ln(S) + (r - \frac{1}{2}\sigma^2)\tau, \sigma^2 \tau \Big) \Big| S_t=S,\ \tau=T-t,
+\ln (S_T) \sim \mathcal{N} \Big( \ln(S) + (r - \frac{1}{2}\sigma^2)\tau, \sigma^2 \tau \Big) \Big| S_t=S,\ \tau=T-t
 $$
 
 yields
 
 $$
-I_2 = e^{-r\tau} \int_0^\infty \Phi(y) \frac{1}{\sqrt{2\pi \sigma^2 \tau}} \exp\!\left( -\frac{\left(\ln y - \ln S - (r-\tfrac12\sigma^2)\tau\right)^2} {2\sigma^2 \tau} \right) \, \frac{\mathrm{d}y}{y}
+I_2 = e^{-r\tau} \int_0^\infty \Phi(y) \frac{1}{\sqrt{2\pi \sigma^2 \tau}} \exp \left( -\frac{\left(\ln y - \ln S - (r-\tfrac12\sigma^2)\tau\right)^2} {2\sigma^2 \tau} \right) \frac{\mathrm{d}y}{y}
 $$
 
-or we could have said
+or alternatively,
 
 $$
 S_T = S_t \exp ((r - \frac{1}{2}\sigma^2)\tau + \sigma \sqrt{\tau} Z) \quad\quad \tau=T-t \quad\quad Z \sim \mathcal{N}(0,1)
 $$
 
-yielding
+yields
 
 $$
-I_3 = e^{-r\tau} \int_{-\infty}^{\infty} \Phi\!\left( S \exp\Big((r-\frac12\sigma^2)\tau + \sigma\sqrt{\tau} z\Big) \right) \frac{1}{\sqrt{2\pi}} e^{-z^2/2} \,\mathrm{d} z
+I_3 = e^{-r\tau} \int_{-\infty}^{\infty} \Phi \left( S \exp\Big((r-\frac12\sigma^2)\tau + \sigma\sqrt{\tau} z\Big) \right) \frac{1}{\sqrt{2\pi}} e^{-z^2/2} \mathrm{d} z
 $$
 
-where in any case, we have $I_1 = I_2 = I_3$.
+where it can be shown that $I_1 = I_2 = I_3$.
 
 
 
