@@ -8,6 +8,10 @@ from scipy.stats import norm
 
 class Option(ABC):
 
+    @property
+    @abstractmethod
+    def T(self): raise NotImplementedError
+
     @abstractmethod
     def payoff(self, spot): raise NotImplementedError
 
@@ -43,10 +47,14 @@ class ComboOption(Option):
 
     def __init__(self, components=None):
         self.components:list = components or []
-        if len(self.components) > 0:
-            self.T = max(x.T for x,_ in self.components)
+        if self.components:
+            self._T = max(inst.T for inst, _ in self.components)
         else:
-            self.T = 0
+            self._T = 0.0
+
+    @property
+    def T(self):
+        return self._T
 
     def __add__(self, other):
         if isinstance(other, ComboOption):
@@ -88,7 +96,11 @@ class VanillaOption(Option, ABC):
 
     def __init__(self, strike, maturity):
         self.K = strike
-        self.T = maturity
+        self._T = maturity
+
+    @property
+    def T(self):
+        return self._T
 
     def _tau(self, time):
         return np.maximum(self.T - time, 1e-12)
