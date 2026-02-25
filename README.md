@@ -63,7 +63,7 @@ $$
 \mathrm{d}\Pi = \mathrm{d}V - \Delta \mathrm{d}S
 $$
 
-and apply It\^o's lemma. Then
+and apply Ito's lemma. Then
 
 $$
 \mathrm{d}\Pi = \left(\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^2 S^2 \frac{\partial^{2}V}{\partial S^{2}} \right) \mathrm{d}t + \left( \frac{\partial V}{\partial S} - \Delta \right) \mathrm{d} S
@@ -124,6 +124,66 @@ I_1 = \frac{\exp(a\ln (S)+b\tau)}{\sqrt{2\pi \sigma^2 \tau}} \int_{-\infty}^{\in
 $$
 
 by convoluting the transformed payoff function with the Guassian heat kernal.
+
+In the Feynman-Kac route, consider a change of measure $\mathbb{Q}$ such that
+
+$$
+\frac{\mathrm{d} S_t}{S_t} = r \mathrm{d}t + \sigma \mathrm{d}W_t^\mathbb{Q}
+$$
+
+and the discounted option price $U = e^{-rt} V$. Then by the product rule
+
+$$
+\mathrm{d}U = e^{-rt} (-rV\mathrm{d}t + \mathrm{d}V)
+$$
+
+and ito's lemma (again)
+
+$$
+\mathrm{d}V
+= \frac{\partial V}{\partial t} \mathrm{d}t + \frac{\partial V}{\partial S} \mathrm{d}S + \frac{1}{2} \frac{\partial^{2}V}{\partial S^{2}} \mathrm{d} \langle S \rangle \\
+= \frac{\partial V}{\partial t} \mathrm{d}t + \frac{\partial V}{\partial S} \left( r S_t\mathrm{d}t + \sigma S_t \mathrm{d}W_t^\mathbb{Q} \right) + \frac{1}{2} \sigma^2 S^2 \frac{\partial^{2}V}{\partial S^{2}} \mathrm{d} t \\
+= \left( \frac{\partial V}{\partial t} + \frac{1}{2} \sigma^{2} S^{2} \frac{\partial^{2}V}{\partial S^{2}} + rS \frac{\partial V}{\partial S} \right) \mathrm{d}t + \sigma S \frac{\partial V}{\partial S} \mathrm{d}W^\mathbb{Q} \\
+= rV\mathrm{d}t + \sigma S \frac{\partial V}{\partial S} \mathrm{d}W^\mathbb{Q}
+$$
+
+we find that
+
+$$
+\mathrm{d}U = e^{-rt} \sigma S \frac{\partial V}{\partial S} \, \mathrm{d}W^\mathbb{Q}
+$$
+
+is a $\mathbb{Q}$-martingale. Taking the conditional expectation yields
+
+$$
+V(S,t) = \mathbb{E}^\mathbb{Q} [e^{-r\tau}\Phi(S_T)|S_t = S]
+$$
+
+otherwise known as the Feynman-Kac formula. Taking
+
+$$
+\ln (S_T) \sim \mathcal{N} \Big( \ln(S) + (r - \frac{1}{2}\sigma^2)\tau, \sigma^2 \tau \Big) \Big| S_t=S,\ \tau=T-t,
+$$
+
+yields
+
+$$
+I_2 = e^{-r\tau} \int_0^\infty \Phi(y) \frac{1}{\sqrt{2\pi \sigma^2 \tau}} \exp\!\left( -\frac{\left(\ln y - \ln S - (r-\tfrac12\sigma^2)\tau\right)^2} {2\sigma^2 \tau} \right) \, \frac{\mathrm{d}y}{y}
+$$
+
+or we could have said
+
+$$
+S_T = S_t \exp ((r - \frac{1}{2}\sigma^2)\tau + \sigma \sqrt{\tau} Z) \quad\quad \tau=T-t \quad\quad Z \sim \mathcal{N}(0,1)
+$$
+
+yielding
+
+$$
+I_3 = e^{-r\tau} \int_{-\infty}^{\infty} \Phi\!\left( S \exp\Big((r-\frac12\sigma^2)\tau + \sigma\sqrt{\tau} z\Big) \right) \frac{1}{\sqrt{2\pi}} e^{-z^2/2} \,\mathrm{d} z
+$$
+
+where in any case, we have $I_1 = I_2 = I_3$.
 
 
 
