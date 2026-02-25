@@ -33,18 +33,67 @@ The Black–Scholes model relies on the following key assumptions:
 
 ### Notation
 
+- $r$ is the risk free interest rate.
 - $S_t$ is the price of the asset at time $t$.
 - $\mu$ is the drift.
 - $\sigma$ is the volatility.
 - $W_t$ is a standard Brownian motion or Wiener process.
+- $V = V(S,t)$ is the pricing function for an option.
 
 ### Black-Scholes Equation
 
-The underlying price
+Setting the underlying price
 
 $$
 S_T = S_t \exp \Big( (\mu - \frac{1}{2} \sigma^2)(T-t) + \sigma (W_T - W_t) \Big)
 $$
+
+to one side, we seek to derive the famous partial differential equation. Consider a portfolio
+
+$$
+\Pi = V - \Delta \mathrm{d} S
+\qquad\qquad
+\mathrm{d} \Pi = \mathrm{d} V - \Delta \mathrm{d} S
+$$
+
+and apply It\^o's lemma. Then
+
+$$
+\mathrm{d}\Pi = \left(\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^2 S^2 \frac{\partial^{2}V}{\partial S^{2}} \right) \mathrm{d}t + \left( \frac{\partial V}{\partial S} - \Delta \right) \mathrm{d} S
+$$
+
+since $\langle S \rangle_t = \sigma^2 S^2 t$. To eliminate stochasticity, we set
+
+$$
+\Delta = \frac{\partial V}{\partial S}
+$$
+
+using the assumption that we may trade assets continuously. In doing so, we have eliminated risk.
+
+$$
+\left( \frac{\partial V}{\partial S} - \Delta \right) \mathrm{d} S
+$$
+
+vanishes to leave
+
+$$
+\mathrm{d}\Pi = \left(\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^2 S^2 \frac{\partial^{2}V}{\partial S^{2}} \right) \mathrm{d}t
+$$
+
+as a risk-free portfolio. But by no-arbitrage, we must have that
+
+$$
+\mathrm{d} \Pi = r \Pi \mathrm{d} t
+$$
+
+which, after plugging in $\mathrm{d} \Pi$ on the left and $\Pi$ on the right, yields
+
+$$
+\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^{2} S^{2} \frac{\partial^{2}V}{\partial S^{2}} + rS \frac{\partial V}{\partial S} - rV = 0 \qquad\quad V(T,S) = \Phi(S)
+$$
+
+which is otherwise known as the Black-Scholes Equation.
+
 
 ### Black-Scholes Formula
 
@@ -54,13 +103,7 @@ $$
 
 ### Greeks
 
-$$
-\langle S \rangle
-$$
 
-$$
-\langle S \rangle_t
-$$
 
 
 
