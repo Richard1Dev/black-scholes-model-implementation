@@ -4,7 +4,7 @@
 
 Option pricing plays a crucial role in modern financial markets, providing a framework for evaluating financial derivatives such as stock options, interest rate options, and commodities. The Black-Scholes model, developed in 1973 by Fischer Black, Myron Scholes, and Robert C. Merton, revolutionised the pricing of European-style options by providing an analytical solution to the problem of option valuation under certain assumptions. This model is widely regarded as one of the foundational theories in financial mathematics. This model is implemented in this project.
 
-###### Project aims:
+### Project aims:
 
 - Document the key Black-Scholes assumptions.
 - Provide a loose derivation of famous results such as the Black-Scholes Equation, Black-Scholes Formula, and closed-form solutions of vanilla options.
@@ -51,9 +51,9 @@ $$
 to one side, we seek to derive the famous partial differential equation. Consider a portfolio
 
 $$
-\Pi = V - \Delta \mathrm{d} S
+\Pi = V - \Delta \mathrm{d}S
 \qquad\qquad
-\mathrm{d} \Pi = \mathrm{d} V - \Delta \mathrm{d} S
+\mathrm{d}\Pi = \mathrm{d}V - \Delta \mathrm{d}S
 $$
 
 and apply It\^o's lemma. Then
@@ -68,13 +68,7 @@ $$
 \Delta = \frac{\partial V}{\partial S}
 $$
 
-using the assumption that we may trade assets continuously. In doing so, we have eliminated risk.
-
-$$
-\left( \frac{\partial V}{\partial S} - \Delta \right) \mathrm{d} S
-$$
-
-vanishes to leave
+using the assumption that we may trade assets continuously. In doing so, we have eliminated risk. The $\mathrm{d} S$ term vanishes to leave
 
 $$
 \mathrm{d}\Pi = \left(\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^2 S^2 \frac{\partial^{2}V}{\partial S^{2}} \right) \mathrm{d}t
