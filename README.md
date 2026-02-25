@@ -9,7 +9,7 @@ Option pricing plays a crucial role in modern financial markets, providing a fra
 ### Project aims:
 
 - Document the key Black-Scholes assumptions.
-- Provide a loose derivation of famous results such as the Black-Scholes Equation, Black-Scholes Formula, and closed-form solutions of vanilla options.
+- Provide a loose derivation of famous results such as the Black-Scholes Equation, Feynman-Kac Formula, Black-Scholes Formula, and closed-form solutions of vanilla options.
 - Implement vanilla option pricing and sensitivities (Greeks) in Python.
 - Provide key visualisation such as sample underlying paths and the option pricing function.
 - Carry out delta hedging in order to numerically verify the Black-Scholes Equation.
@@ -90,13 +90,15 @@ $$
 which, after plugging in $\mathrm{d} \Pi$ on the left and $\Pi$ on the right, yields
 
 $$
-\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^{2} S^{2} \frac{\partial^{2}V}{\partial S^{2}} + rS \frac{\partial V}{\partial S} - rV = 0 \qquad\quad V(S,T) = \Phi(S)
+\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^{2} S^{2} \frac{\partial^{2}V}{\partial S^{2}} + rS \frac{\partial V}{\partial S} - rV = 0
+\qquad\quad
+V(S,T) = \Phi(S)
 $$
 
 which is otherwise known as the Black-Scholes Equation.
 
 
-### Black-Scholes Formula
+### Feynman-Kac Formula and Black-Scholes Formula
 
 To obtain the solution to the parabolic second order partial differential equation, we may use one of two methods:
 
@@ -114,7 +116,9 @@ To get to the heat equation, apply the following substitutions:
 and you arrive at
 
 $$
-\frac{\partial u}{\partial \tau} = \frac{1}{2} \sigma^{2} \frac{\partial^2 u}{\partial x^2} \qquad\qquad u(x,0) = e^{-ax}\Phi(e^x)
+\frac{\partial u}{\partial \tau} = \frac{1}{2} \sigma^{2} \frac{\partial^2 u}{\partial x^2}
+\qquad\qquad
+u(x,0) = e^{-ax}\Phi(e^x)
 $$
 
 otherwise known as the heat equation. The solution is
@@ -140,8 +144,7 @@ $$
 and ito's lemma (again... along with using the $\mathbb{Q}$ model for $S$)
 
 $$
-\mathrm{d}V
-= \left( \frac{\partial V}{\partial t} + \frac{1}{2} \sigma^{2} S^{2} \frac{\partial^{2}V}{\partial S^{2}} + rS \frac{\partial V}{\partial S} \right) \mathrm{d}t + \sigma S \frac{\partial V}{\partial S} \mathrm{d}W^\mathbb{Q}
+\mathrm{d}V = \left( \frac{\partial V}{\partial t} + \frac{1}{2} \sigma^{2} S^{2} \frac{\partial^{2}V}{\partial S^{2}} + rS \frac{\partial V}{\partial S} \right) \mathrm{d}t + \sigma S \frac{\partial V}{\partial S} \mathrm{d}W^\mathbb{Q}
 $$
 
 we find that
@@ -171,7 +174,11 @@ $$
 or alternatively,
 
 $$
-S_T = S_t \exp ((r - \frac{1}{2}\sigma^2)\tau + \sigma \sqrt{\tau} Z) \quad\quad \tau=T-t \quad\quad Z \sim \mathcal{N}(0,1)
+S_T = S_t \exp \Big((r - \frac{1}{2}\sigma^2)\tau + \sigma \sqrt{\tau} Z\Big)
+\quad\quad
+\tau=T-t
+\quad\quad
+Z \sim \mathcal{N}(0,1)
 $$
 
 yields
@@ -183,11 +190,31 @@ $$
 where it can be shown that $I_1 = I_2 = I_3$.
 
 
-
-
 ### Vanilla Options
 
+Consider $I_3$ for a call option $C(S,t)$ with payoff $\Phi(S) = max(S-K,0)$. Write
 
+$$
+N(x) = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^x e^{-u^2/2} du
+\qquad
+N'(x) = \frac{1}{\sqrt{2\pi}} e^{-x^2/2}
+$$
+
+and define
+
+$$
+d_1 = \frac{\ln(S/K) + (r + \frac{1}{2}\sigma^2)\tau}{\sigma \sqrt{\tau}}
+\qquad\quad
+d_2 = d_1 - \sigma \sqrt{\tau}
+\qquad\quad
+\tau = T-t
+$$
+
+to see
+
+$$
+C(S,t) = e^{-r\tau} \int_{-d_2}^{\infty} \Big(S e^{(r-\frac12\sigma^2)\tau + \sigma\sqrt{\tau}z} - K \Big) N'(z) dz
+$$
 
 
 ### Greeks
