@@ -1,7 +1,6 @@
 this_filename = '''src/delta_hedge.py'''
 declare_import = False
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 
@@ -132,7 +131,7 @@ def delta_hedge(underlying, call, rate):
 
 
 if __name__ == '__main__':
-    print(f'Running {this_filename}...')
+    print(f"Running {this_filename}...")
 else:
     if declare_import:
-        print(f'Importing {this_filename}...')
+        print(f"Importing {this_filename}...")

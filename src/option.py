@@ -42,7 +42,11 @@ class Option(ABC):
 class ComboOption(Option):
 
     def __init__(self, components=None):
-        self.components = components or []
+        self.components:list = components or []
+        if len(self.components) > 0:
+            self.T = max(x.T for x,_ in self.components)
+        else:
+            self.T = 0
 
     def __add__(self, other):
         if isinstance(other, ComboOption):
@@ -166,7 +170,7 @@ class PutOption(VanillaOption):
 
 
 if __name__ == '__main__':
-    print(f'Running {this_filename}...')
+    print(f"Running {this_filename}...")
 else:
     if declare_import:
-        print(f'Importing {this_filename}...')
+        print(f"Importing {this_filename}...")
