@@ -213,8 +213,10 @@ $$
 to see
 
 $$
-C(S,t) = e^{-r\tau} \int_{-d_2}^{\infty} \Big(S e^{(r-\frac12\sigma^2)\tau + \sigma\sqrt{\tau}z} - K \Big) N'(z) dz
+C(S,t) = e^{-r\tau} \left[S e^{(r-\frac12\sigma^2)\tau} \int_{-d_2}^{\infty} e^{\sigma\sqrt{\tau}z}N'(z) dz - K \int_{-d_2}^{\infty} N'(z) dz \right]
 $$
+
+after noting $[-d_2,\infty)$ is the non-vanishing part of the integrand and distributing the intergral over the minus sign.
 
 
 ### Greeks
