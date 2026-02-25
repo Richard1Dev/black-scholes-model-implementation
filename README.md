@@ -216,13 +216,52 @@ $$
 C(S,t) = e^{-r\tau} \left[S e^{(r-\frac12\sigma^2)\tau} \int_{-d_2}^{\infty} e^{\sigma\sqrt{\tau}z}N'(z) dz - K \int_{-d_2}^{\infty} N'(z) dz \right]
 $$
 
-after noting $[-d_2,\infty)$ is the non-vanishing part of the integrand and distributing the intergral over the minus sign.
+after noting $[-d_2,\infty)$ is the non-vanishing part of the integrand and distributing the intergral over the minus sign. Applying the identity
+
+$$
+\int_\alpha^\infty e^{\beta z}N'(z) dz = e^{\beta^2/2} N(-\alpha+\beta)
+$$
+
+with $\alpha=-d_2$ and $\beta=\sigma\sqrt{\tau}$ yields the standard result for the call option
+
+$$
+C(S,t) = S N(d_1)-K e^{-r\tau} N(d_2)
+$$
+
+with the put option
+
+$$
+P(S,t) = K e^{-r\tau} N(-d_2) - S N(-d_1)
+$$
+
+following from put-call parity: $P = C - S + K e^{-r\tau}$.
 
 
 ### Greeks
 
+The quantities
 
+$$
+\Delta = \frac{\partial V}{\partial S} \qquad \Gamma = \frac{\partial^2 V}{\partial S^2} \qquad \mathcal{V} = \frac{\partial V}{\partial \sigma} \qquad \Theta = \frac{\partial V}{\partial t}
+$$
 
+are known as "the Greeks" and are the primary option sensitivities. These quantities measure the local sensitivity of the option value $V(S,t)$ to changes in the underlying price $S$, volatility $\sigma$, and time $t$. Beyond their computational definitions, they characterise the structure of risk in the Black-Scholes framework. Together, they decompose option risk into directional (delta), curvature (gamma), volatility (vega), and temporal (theta) components, forming the basis of practical risk management and hedging strategies. The Greeks therefore characterise both the local behaviour of the pricing function and the stability of the replication strategy. They provide the link between the continuous-time theory and the discrete-time approximations.
+
+Delta represents the linear exposure of the option to movements in the underlying asset. In the replication argument, it coincides with the number of shares held in the self-financing portfolio. Maintaining a position of $\Delta_t$ shares eliminates instantaneous diffusion risk, rendering the portfolio locally riskless. For a European call,
+
+$$
+\Delta = N(d_1)
+$$
+
+with $0 < N(d_1) < 1$, i.e. the delta of a call lies strictly between zero and one. It increases monotonically with $S$, approaching zero deep out-of-the-money and one deep in-the-money. Thus delta quantifies both directional exposure and the hedge ratio required for local replication. The symmetry,
+
+$$
+\Delta_{\mathrm{call}} - \Delta_{\mathrm{put}} = 1
+\qquad 
+\Delta_{\mathrm{put}} = \Delta_{\mathrm{call}} - 1
+$$
+
+follows from put-call parity.
 
 
 
