@@ -1,14 +1,12 @@
 # Black-Scholes Model Implementation
 
-A mathematical and computational implementation of the Black–Scholes model for European option pricing, including derivation sketches, closed-form solutions, Greeks computation, simulation of underlying paths, and numerical delta hedging verification. This project bridges continuous-time financial theory and practical discrete-time implementation.
-
 
 ### Overview
 
-The **Black–Scholes model (1973)** provides an analytical framework for pricing European-style options under no-arbitrage assumptions. Developed by Fischer Black, Myron Scholes, and Robert C. Merton, it remains foundational in quantitative finance.
+A mathematical and computational implementation of the Black–Scholes model for European option pricing, including derivation sketches, closed-form solutions, simulation of underlying paths, and numerical delta hedging verification. This project bridges continuous-time financial theory and practical discrete-time implementation.
 
 
-### Project aims:
+### Project aims
 
 - Document the key Black-Scholes assumptions.
 - Sketch derivations of famous results:
@@ -24,35 +22,9 @@ The **Black–Scholes model (1973)** provides an analytical framework for pricin
 The aim is to connect theory, computation, and financial interpretation in a unified framework.
 
 
-### Project Structure
-
-```
-root/
-│
-├── docs/
-│   ├── bs_theory/
-│   └── hedging_theory/
-│
-├── figures/
-│   └── ...
-│
-├── notebooks/
-│   └── results.ipynb
-│
-├── src
-│   ├── delta_hedge.py
-│   ├── option.py
-│   └── underlying.py
-│
-├── .gitattributes
-├── .gitignore
-└── README.md
-```
-
-
 ### Implementation
 
-- Methods for pricing and Greeks within option classes.
+- Option classes, with methods for pricing and Greeks.
 - Addition operator overriding to instantiate linear combinations of options. E.g. butterfly spread.
 - Geometric Brownian Motion simulation.
 - Discrete delta hedging engine.
@@ -62,6 +34,37 @@ root/
     - Payoff functions
     - Option price surfaces
     - Hedging error convergence
+
+
+### Project Structure
+
+```
+root/
+│
+├── docs/
+│   ├── bs_derivation/
+│   │   ├── BlackScholes_Derivation.pdf
+│   │   └── BlackScholes_Derivation.tex
+│   └── hedging_analysis/
+│       ├── .pdf
+│       └── .tex
+│
+├── figures/
+│   └── ...
+│
+├── notebooks/
+│   ├── 
+│   └── results.ipynb
+│
+├── src/
+│   ├── delta_hedge.py
+│   ├── option.py
+│   └── underlying.py
+│
+├── .gitattributes
+├── .gitignore
+└── README.md
+```
 
 
 ### Numerical Experiments
