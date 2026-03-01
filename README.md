@@ -36,37 +36,6 @@ The aim is to connect theory, computation, and financial interpretation in a uni
     - Hedging error convergence
 
 
-### Project Structure
-
-```
-root/
-│
-├── docs/
-│   ├── bs_derivation/
-│   │   ├── BlackScholes_Derivation.pdf
-│   │   └── BlackScholes_Derivation.tex
-│   └── hedging_analysis/
-│       ├── .pdf
-│       └── .tex
-│
-├── figures/
-│   └── ...
-│
-├── notebooks/
-│   ├── 
-│   └── results.ipynb
-│
-├── src/
-│   ├── delta_hedge.py
-│   ├── option.py
-│   └── underlying.py
-│
-├── .gitattributes
-├── .gitignore
-└── README.md
-```
-
-
 ### Numerical Experiments
 
 The project investigates:
@@ -108,9 +77,4 @@ As trading frequency increases, hedging error converges in probability toward ze
 - American option pricing (finite difference methods)
 
 
-
 ---
-
-
-
-
