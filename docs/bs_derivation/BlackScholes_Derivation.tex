@@ -1,0 +1,552 @@
+% Black-Scholes Derivation
+\documentclass[12pt]{article}
+\usepackage{amsthm, amsmath, amssymb, amsfonts, mathrsfs, geometry, graphicx}
+\geometry{margin=1in}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}[lemma]{Proposition}
+\newtheorem{corollary}[lemma]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[lemma]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[lemma]{Remark}
+
+\title{Black-Scholes: Derivation of Results}
+\author{Richard}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+
+
+
+
+\section{Preliminary}
+
+
+\subsection{Document Aims}
+The Black-Scholes model is often presented in its final, polished form: a partial differential equation, an analytic pricing integral, and explicit pricing formulas for vanilla call and put options. Yet the mathematical journey of getting to these results are often omitted. This document does not merely state the Black-Scholes results. Its primary aim is to reconstruct them. We begin by establishing the modelling framework: listing the assumptions for future scrutiny, proposing the stochastic dynamics of the underlying asset, and the elimination of risk through dynamic hedging. From these foundations, we derive several key results rigorously and transparently, making explicit every intermediate step. The objective is therefore twofold:
+\begin{enumerate}
+	\item To provide a complete and logically coherent derivation of key results. This includes, not only the famous {\emph{equation}} and {\emph{formula}}, but also the {\emph{pricing functions for vanilla options}} within the Black-Scholes world.
+	\item Understand how risk is eliminated within this framework.
+\end{enumerate}
+By proceeding from stochastic dynamics to explicit option prices, this paper aims to make the structure of the theory transparent. We seek not only what the model concludes, but precisely how these results are obtained.
+
+
+\subsection{Assumptions}
+The Black-Scholes model relies on the following key assumptions:
+\begin{enumerate}
+	\item {\textbf{Efficient Markets}}: Markets have {\textbf{no arbitrage}} opportunities, meaning risk free profits cannot be made through discrepancies in prices, and current information is reflected in the market price.
+	\item {\textbf{Constant Risk-Free Rate}}: The risk-free interest rate is constant and known.
+	\item {\textbf{Frictionless Markets}}: Assets are perfectly liquid, with no bid-ask spread, and can always be traded without additional transaction costs. Short selling is also included.
+	\item {\textbf{Underlying Asset Dynamics}}: The asset price follows a geometric Brownian motion with constant drift and volatility.
+	\begin{enumerate}
+		\item {\textbf{Log-Normal Prices}}: Asset prices are log-normally distributed.
+		\item {\textbf{Constant Drift}}: Emphasising again that the drift is constant and known.
+		\item {\textbf{Constant Volatility}}: Emphasising again that the volatility is constant and known.
+	\end{enumerate}
+	\item {\textbf{Continuous Trading}}: The asset can be traded infinitely often, in any quantity, and the price may change by any infinitesimal amount.
+	\item {\textbf{European Options}}: Options can only be exercised at expiration.
+	\item {\textbf{No Dividends}}: The asset does not pay dividends during the option's life.
+\end{enumerate}
+
+%### Assumptions
+%
+%The Black–Scholes model relies on the following key assumptions:
+%
+%- **Efficient Markets:** Markets have no arbitrage opportunities.
+%- **Risk-Free Rate:** The risk-free interest rate is constant and known.
+%- **Frictionless Markets:** Assets are perfectly liquid, with no bid-ask spread, and can always be traded without additional transaction costs. Short selling is also included.
+%- **Underlying Asset Dynamics:** The asset price follows a geometric Brownian motion with constant drift and volatility.
+%    - **Log-Normal Prices:** Asset prices are log-normally distributed.
+%    - **Constant Drift:** Emphasising again that the drift is constant and known.
+%    - **Constant Volatility:** Emphasising again that the volatility is constant and known.
+%- **Continuous Trading:** The asset can be traded infinitely often, and in any quantity.
+%- **European Options:** Options can only be exercised at expiration.
+%- **No Dividends:** The asset does not pay dividends during the option's life.
+
+
+\subsection{It\^o's Lemma}
+\begin{lemma}
+	Let $\vec{X} = (X^1, \dots, X^d)$ be continuous semimartingales where $\langle X^i, X^j \rangle$ denotes the quadratic covariation (or covariance) of the processes $X^i$ and $X^j$, and let $F : \mathbb{R}^d \to \mathbb{R}$ be a twice continuously differentiable function. Then, the process $F(\vec{X}_t)$ for $t\geq 0$ is also a continuous semimartingale. Up to indistinguishability, we have the following representation:
+	$$
+	\vphantom{\int} F(\vec{X}_t) = F(\vec{X}_0) + \sum_{i=1}^{d} \int_0^t \frac{\partial F}{\partial x^i}(\vec{X}_s) \, \mathrm{d}X^i_s + \frac{1}{2} \sum_{1 \leq i,j \leq d} \int_0^t \frac{\partial^2 F}{\partial x^i \partial x^j}(\vec{X}_s) \, \mathrm{d}\langle X^i, X^j \rangle_s
+	$$
+	where, in the case $d=2$,
+	$$
+	\vphantom{\int} \mathrm{d}V = \frac{\partial V}{\partial t} \, \mathrm{d}t + \frac{\partial V}{\partial S} \, \mathrm{d}S + \frac{1}{2} \frac{\partial^2 V}{\partial S^2} \, \mathrm{d}\langle S \rangle
+	$$
+	for a function $V(S,t)$.
+\end{lemma}
+
+
+\subsection{Geometric Brownian Motion}
+The underlying asset price $S_t$ following geometric Brownian motion is characterised by
+$$
+\vphantom{\int} \mathrm{d}S_t = \mu S_t \,\mathrm{d}t + \sigma S_t\, \mathrm{d}W_t
+$$
+where $\mu$ is the drift, $\sigma$ is volatility, and $W_t$ is a standard Brownian motion under $\mathbb{P}$, the empirical measure. It has quadratic variation $\mathrm{d} \langle S \rangle_t = \sigma^2 S_t^2\, \mathrm{d}t$. The SDE has the solution
+$$
+\vphantom{\int} S_{t_2} = S_{t_1} \exp \Big( (\mu - \frac{1}{2} \sigma^2)(t_2-t_1) + \sigma (W_{t_2} - W_{t_1}) \Big) \quad\quad 0\leq t_1 \leq t_2 \leq T
+$$
+as an explicit expression for the geometric Brownian motion.
+
+
+
+\section{Black-Scholes Equation}
+In the simple case of selling a vanilla call option, we can be at risk of losing money when the option is ITM. For every \$1 the underlying gains, we would lose \$1, with potentially unlimited loss. But if we own 1 unit of the underlying then, for every \$1 lost from the option, we would gain that \$1 back from the underlying. If the option drops OTM then we sell the underlying so we don't lose money on that either. This is {\emph{dynamic hedging}}.
+
+
+\subsection{Dynamic Hedging}
+\begin{theorem}
+	Let $V_t := V(S_t,t)$ be the value of the option, with payoff function $V_T = \Phi(S_T)$, where $V = V(S,t)$ is a twice continuously differentiable function. Then we have the parabolic second order partial differential equation
+	\begin{equation}
+	\label{eq:BS PDE}
+	\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^{2} S^{2} \frac{\partial^{2}V}{\partial S^{2}} + rS \frac{\partial V}{\partial S} - rV = 0 \qquad\quad V(T,S) = \Phi(S)
+	\end{equation}
+	otherwise known as the famous Black-Scholes Equation!
+\end{theorem}
+\begin{proof}
+	With dynamic hedging in mind, consider a (self financing) portfolio
+	$$
+	\vphantom{\int} \Pi_t = V_t - \Delta_t S_t
+	$$
+	where , and $\Delta_t$ denotes our predictable trading strategy. Over a small interval $[t,t+\delta t)$, the evolution of our (self financing) portfolio is
+	$$
+	\vphantom{\int} \delta \Pi_t = \delta V_t - \Delta_t \delta S_t
+	$$
+	% \mathrm{d} \big( \Delta_t S_t \big) = \Delta_t \,\mathrm{d}S_t
+	% implies
+	% \Delta_t S_t = \Delta_0 S_0 + \int_0^t \Delta_u \,\mathrm{d}S_u
+	because $\Delta_t$ is progressively measurable and constant over $[t,t+\delta t)$. Details on why $\mathrm{d}\Delta_t$ and $\mathrm{d} \langle \Delta, S\rangle_t$ vanish are found on pages 30 and 42 of {\emph{The Mathematics of Financial Derivatives A Student Introduction}} (1995) by {\emph{Paul Wilmott}}, {\emph{Sam Howison}}, and {\emph{Jeff Dewynne}}. We have
+	\begin{align*}
+		\mathrm{d}\Pi
+		&= \frac{\partial V}{\partial t} \, \mathrm{d}t + \frac{\partial V}{\partial S} \, \mathrm{d}S + \frac{1}{2} \frac{\partial^{2}V}{\partial S^{2}} \, \mathrm{d} \langle S \rangle - \Delta \, \mathrm{d} S \\
+		&= \frac{\partial V}{\partial t} \, \mathrm{d}t + \mu S \frac{\partial V}{\partial S} \,\mathrm{d}t + \sigma S \frac{\partial V}{\partial S} \,\mathrm{d} W + \frac{1}{2} \sigma^2 S^2 \frac{\partial^{2}V}{\partial S^{2}}\,\mathrm{d}t - \mu S \Delta \,\mathrm{d}t - \sigma S \Delta \,\mathrm{d} W \\
+		&= \left( \frac{\partial V}{\partial t} + \mu S \frac{\partial V}{\partial S} + \frac{1}{2} \sigma^2 S^2 \frac{\partial^{2}V}{\partial S^{2}} - \mu S \Delta  \right) \mathrm{d}t + \sigma S \left( \frac{\partial V}{\partial S} - \Delta \right) \mathrm{d} W
+	\end{align*}
+	after taking the limit as $\delta t \rightarrow 0$ and applying It\^o's lemma. Here we notice that choosing the trading strategy
+	$$
+	\Delta = \frac{\partial V}{\partial S}
+	$$
+	we arrive at
+	$$
+	\mathrm{d}\Pi = \left(\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^2 S^2 \frac{\partial^{2}V}{\partial S^{2}} \right) \mathrm{d}t
+	$$
+	where the stochastic diffusion term vanishes from the portfolio! This portfolio is risk free, so by no-arbitrage, we must have that
+	$$
+	\mathrm{d}\Pi = r\Pi \, \mathrm{d}t
+	$$
+	which is to say that it earns the risk free rate $r$. Plugging in for the above, we see
+	$$
+	\left(\frac{\partial V}{\partial t} + \frac{1}{2} \sigma^2 S^2 \frac{\partial^{2}V}{\partial S^{2}} \right) \mathrm{d}t = r \left( V - S \frac{\partial V}{\partial S} \right) \mathrm{d}t
+	$$
+	which rearranges to give the desired PDE.
+\end{proof}
+
+
+
+\section{Black-Scholes Formula}
+\begin{theorem}
+	Define
+	\begin{align*}
+		I_1 &= \frac{S^a e^{b\tau}}{\sqrt{2\pi \sigma^2 \tau}} \int_{-\infty}^{\infty} \Phi(e^x) \exp \Big( -\frac{(\ln (S) - x)^2}{2\sigma^2 \tau} - ax \Big) \,\mathrm{d}x \\
+		I_2 &= \frac{e^{-r\tau}}{\sqrt{2\pi\sigma^2\tau}} \int_0^\infty \Phi(y) \exp \Big( -\frac{\left(\ln (y) - \ln (S) - (r-\tfrac12\sigma^2)\tau\right)^2} {2\sigma^2 \tau} \Big) \, \frac{\mathrm{d}y}{y} \\
+		I_3 &= \frac{e^{-r\tau}}{\sqrt{2\pi}} \int_{-\infty}^{\infty} \Phi \Big( S \exp \big((r-\frac12\sigma^2)\tau + \sigma\sqrt{\tau} z\big) \Big) \exp \Big( -\frac{z^2}{2} \Big) \,\mathrm{d} z
+	\end{align*}
+	and
+	$$
+	a = \frac{1}{2} - \frac{r}{\sigma^2}
+	\qquad\qquad
+	b = -\frac{1}{2} \Big( \frac{r^2}{\sigma^2} + r + \frac{\sigma^2}{4} \Big)
+	$$
+	where $\tau = T-t$ is the time to maturity. All these integrals solve (\ref{eq:BS PDE}) and are all equivalent.
+\end{theorem}
+\begin{proof}
+	See theorems \ref{thm: heat equ solution} and \ref{thm: fk formula and solutions} to see that they are indeed solutions. See propositions \ref{prop: i1 i2} and \ref{prop: i2 i3} to see equivalence.
+\end{proof}
+\begin{remark}
+	We will use $\tau = T-t$ throughout the document.
+\end{remark}
+
+
+\subsection{Heat Equation}
+\begin{theorem}
+\label{thm: heat equ solution}
+	Applying the following substitutions
+	$$
+	\tau = T-t
+	\qquad\qquad
+	x = \ln (S)
+	\qquad\qquad
+	V = e^{ax + b\tau} u
+	$$
+	in order, reduces (\ref{eq:BS PDE}) to the heat equation
+	$$
+	\frac{\partial u}{\partial \tau} = \frac{1}{2} \sigma^{2} \frac{\partial^2 u}{\partial x^2}
+	$$
+	and the solution is given by $I_1$.
+\end{theorem}
+\begin{proof}
+	We first make a computation of
+	\begin{align*}
+		\frac{\partial V}{\partial \tau}
+		&= - \frac{\partial V}{\partial t} \\
+		\frac{\partial V}{\partial S}
+		&= \frac{\partial x}{\partial S} \frac{\partial V}{\partial x} = \frac{\partial}{\partial S} \big( \ln(S) \big) \frac{\partial V}{\partial x} = \frac{1}{S} \frac{\partial V}{\partial x} \\
+		\frac{\partial^2 V}{\partial S^2}
+		&= \frac{\partial}{\partial S} \Big( \frac{1}{S} \frac{\partial V}{\partial x} \Big) = \frac{1}{S} \frac{\partial x}{\partial S} \frac{\partial^2 V}{\partial x^2} + \frac{\partial}{\partial S} \Big( \frac{1}{S} \Big) \frac{\partial V}{\partial x} = \frac{1}{S^2} \Big( \frac{\partial^2 V}{\partial x^2} - \frac{\partial V}{\partial x} \Big)
+	\end{align*}
+	to see
+	$$
+	\frac{\partial V}{\partial \tau} = \frac{1}{2} \sigma^{2} \Big( \frac{\partial^2 V}{\partial x^2} - \frac{\partial V}{\partial x} \Big) + r \frac{\partial V}{\partial x} - rV = \frac{1}{2} \sigma^{2} \frac{\partial^2 V}{\partial x^2} + \Big( r - \frac{1}{2} \sigma^2 \Big) \frac{\partial V}{\partial x} - rV
+	$$
+	by directly substituting the newly computed terms into (\ref{eq:BS PDE}). Taking $V = e^{ax + b\tau} u$,
+	\begin{align*}
+		\frac{\partial V}{\partial \tau} &= e^{ax + b\tau} \left( \frac{\partial u}{\partial \tau} + bu \right) \\
+		\frac{\partial V}{\partial x} &= e^{ax + b\tau} \left( \frac{\partial u}{\partial x} + au \right) \\
+		\frac{\partial^2 V}{\partial x^2} &= e^{ax + b\tau} \left( \frac{\partial^2 u}{\partial x^2} + 2a \frac{\partial u}{\partial x} + a^2u \right)
+	\end{align*}
+	we have
+	$$
+	\frac{\partial u}{\partial \tau} + bu = \frac{1}{2} \sigma^{2} \left( \frac{\partial^2 u}{\partial x^2} + 2a \frac{\partial u}{\partial x} + a^2u \right) + \Big( r - \frac{1}{2} \sigma^2 \Big) \left(  \frac{\partial u}{\partial x} + au \right) - ru
+	$$
+	or equivalently
+	$$
+	\frac{\partial u}{\partial \tau} = \frac{1}{2} \sigma^{2} \frac{\partial^2 u}{\partial x^2} + \left( \sigma^2 a + \Big( r - \frac{1}{2} \sigma^2 \Big) \right) \frac{\partial u}{\partial x} + \left( \frac{1}{2} \sigma^2 a^2 + a \Big( r- \frac{1}{2} \sigma^2 \Big) - b - r \right) u
+	$$
+	after dividing through the common factor $e^{ax + b\tau}$ on all terms. Now impose the coefficients of $u$ and $\partial_x u$ vanish. That is to say
+	$$
+	\sigma^2 a + \Big( r - \frac{1}{2} \sigma^2 \Big) = 0 \qquad\qquad \frac{1}{2} \sigma^2 a^2 + a \Big( r- \frac{1}{2} \sigma^2 \Big) - b - r = 0
+	$$
+	which is trivially solved to yield the values in the theorem statement. The heat equation is obtained at this stage. To show the solution is $I_1$, note that the heat equation has an explicit solution as the convolution of the temporal condition and the Gaussian heat kernel
+	$$
+	u(x,\tau) = \frac{1}{\sqrt{2\pi \sigma^2 \tau}} \int_{-\infty}^{\infty} u(w,0) \exp\Big(\frac{-(x-w)^2}{2\sigma^2 \tau}\Big) \,\mathrm{d}w
+	$$
+	with the temporal condition $u(0,w) = e^{-aw}V(T,e^w) = e^{-aw}\Phi(e^w)$. The integral $I_1$ is a consequence of reversing the substitutions on the convolution above.
+\end{proof}
+
+
+\subsection{Feynman-Kac}
+\begin{theorem}
+\label{thm: fk formula and solutions}
+	The option price is given by the Feynman-Kac formula
+	$$
+	V(S,t) = \mathbb{E}^\mathbb{Q} [e^{-r(T-t)}\Phi(S_T)|S_t = S]
+	$$
+	with explicit expressions via either $I_2$ or $I_3$.
+\end{theorem}
+\begin{proof}
+	Invoke Girsanov's theorem to find
+	$$
+	\vphantom{\int} \mathrm{d}S_t = r S_t \,\mathrm{d}t + \sigma S_t \,\mathrm{d}W_t^\mathbb{Q}
+	$$
+	for a suitable change of measure $\mathbb{Q}$, also known as the risk-neutral measure. Applying Ito's lemma under this risk-neutral measure yields
+	\begin{align*}
+		\mathrm{d}V
+		&= \frac{\partial V}{\partial t} \, \mathrm{d}t + \frac{\partial V}{\partial S} \, \mathrm{d}S + \frac{1}{2} \frac{\partial^{2}V}{\partial S^{2}} \, \mathrm{d} \langle S \rangle \\
+		&= \frac{\partial V}{\partial t} \, \mathrm{d}t + \frac{\partial V}{\partial S} \left( r S_t \,\mathrm{d}t + \sigma S_t\, \mathrm{d}W_t^\mathbb{Q} \right) + \frac{1}{2} \sigma^2 S^2 \frac{\partial^{2}V}{\partial S^{2}} \, \mathrm{d}t \\
+		&= \left( \frac{\partial V}{\partial t} + \frac{1}{2} \sigma^{2} S^{2} \frac{\partial^2 V}{\partial S^2} + rS \frac{\partial V}{\partial S} \right) \mathrm{d}t + \sigma S \frac{\partial V}{\partial S} \, \mathrm{d}W^\mathbb{Q} \\
+		&= rV\,\mathrm{d}t + \sigma S \frac{\partial V}{\partial S} \, \mathrm{d}W^\mathbb{Q}
+	\end{align*}
+	with the final step following from (\ref{eq:BS PDE}). Aiming for a martingale term, we define
+	$$
+	\vphantom{\int} U = e^{-rt}V
+	$$
+	to see that
+	$$
+	\vphantom{\int} \mathrm{d}U = e^{-rt} \Big( -rV\,\mathrm{d}t + \mathrm{d}V \Big) = e^{-rt} \sigma S \frac{\partial V}{\partial S} \, \mathrm{d}W^\mathbb{Q}
+	$$
+	following from the product rule. That is to say $U$ is a $\mathbb{Q}$-martingale and that
+	$$
+	\vphantom{\int} V_t = e^{rt}U_t = e^{rt} \mathbb{E}^\mathbb{Q} [U_T|\mathscr{F}_t] = e^{rt} \mathbb{E}^\mathbb{Q} [e^{-rT}V_T|\mathscr{F}_t] = \mathbb{E}^\mathbb{Q} [e^{-r(T-t)}V_T|\mathscr{F}_t]
+	$$
+	which is the Feynman-Kac formula. The final step stems from the efficient market hypothesis where $\mathscr{F}_t$ is given by $S_t = S$. Recall that if $X\sim\mathcal{N}(\mu, \sigma^2)$ and $Y=e^X$ then
+	$$
+	\mathbb{E}[\Phi(X)] = \frac{1}{\sqrt{2\pi\sigma^2}} \int_{-\infty}^\infty \Phi(x) \exp \Big( -\frac{(x-\mu)^2}{2\sigma^2} \Big) \,\mathrm{d}x
+	$$
+	and
+	$$
+	\mathbb{E}[\Phi(Y)] = \frac{1}{\sqrt{2\pi\sigma^2}} \int_0^\infty \Phi(y) \exp \Big( -\frac{(\ln(y)-\mu)^2}{2\sigma^2} \Big) \,\frac{\mathrm{d}y}{y}
+	$$
+	so that, given
+	$$
+	\vphantom{\int} S_{t_2} = S_{t_1} \exp \Big( (r - \frac{1}{2} \sigma^2)(t_2-t_1) + \sigma (W_{t_2}^\mathbb{Q} - W_{t_1}^\mathbb{Q}) \Big) \quad\quad 0\leq t_1 \leq t_2 \leq T
+	$$
+	and $\tau = T-t$, we could say
+	$$
+	\ln (S_T) \sim \mathcal{N} \Big( \ln(S) + (r - \frac{1}{2}\sigma^2)\tau,\, \ \sigma^2 \tau \Big) \Big| S_t = S
+	$$
+	which yields $I_2$ by for the expectation over a log-normal distribution, or we could have said
+	$$
+	S_T = S \exp \Big( (r - \frac{1}{2}\sigma^2)\tau + \sigma \sqrt{\tau} Z \Big) \Big| S_t = S
+	$$
+	for a standard Gaussian $Z \sim \mathcal{N}(0,1)$ to yield $I_3$ via definition of the expectation over the distribution $\mathcal{N}$ as well.
+\end{proof}
+
+
+\subsection{Equivalence}
+The integrals
+\begin{align*}
+	I_1 &= \frac{S^a e^{b\tau}}{\sqrt{2\pi \sigma^2 \tau}} \int_{-\infty}^{\infty} \Phi(e^x) \exp \Big( -\frac{(\ln (S)-x)^2}{2\sigma^2 \tau} - ax \Big) \,\mathrm{d}x \\
+	I_2 &= \frac{e^{-r\tau}}{\sqrt{2\pi\sigma^2\tau}} \int_0^\infty \Phi(y) \exp \Big( -\frac{\left(\ln (y) - \ln (S) - (r-\tfrac12\sigma^2)\tau\right)^2} {2\sigma^2 \tau} \Big) \, \frac{\mathrm{d}y}{y} \\
+	I_3 &= \frac{e^{-r\tau}}{\sqrt{2\pi}} \int_{-\infty}^{\infty} \Phi \Big( S \exp \big((r-\frac12\sigma^2)\tau + \sigma\sqrt{\tau} z\big) \Big) \exp \Big( -\frac{z^2}{2} \Big) \,\mathrm{d} z
+\end{align*}
+where
+$$
+a = \frac{1}{2} - \frac{r}{\sigma^2}
+\qquad\qquad
+b = -\frac{1}{2} \Big( \frac{r^2}{\sigma^2} + r + \frac{\sigma^2}{4} \Big)
+$$
+are stated again for convenience.
+\begin{proposition}
+\label{prop: i1 i2}
+	The integral representations $I_1$ and $I_2$ are equivalent.
+\end{proposition}
+\begin{proof}
+	Apply the change of variables
+	$$
+	y = e^x
+	\qquad\qquad
+	\mathrm{d}x = \frac{\mathrm{d}y}{y}
+	$$
+	and manipulate. We have
+	\begin{align*}
+		I_1
+		&= \frac{S^a e^{b\tau}}{\sqrt{2\pi \sigma^2 \tau}} \int_{-\infty}^{\infty} \Phi(e^x) \exp \Big( -\frac{(\ln (S)-x)^2}{2\sigma^2 \tau} - ax \Big) \,\mathrm{d}x \\
+		&= \frac{e^{b\tau} \exp(a\ln (S))}{\sqrt{2\pi \sigma^2 \tau}} \int_{0}^{\infty} \Phi(y) \exp \Big( -\frac{(\ln (S)- \ln (y))^2}{2\sigma^2 \tau} - a\ln (y) \Big) \,\frac{\mathrm{d}y}{y} \\
+		&= \frac{e^{b\tau}}{\sqrt{2\pi \sigma^2 \tau}} \int_{0}^{\infty} \Phi(y) \exp \Big( \frac{-1}{2\sigma^2\tau} \big( (\ln (y)- \ln (S))^2 + 2\sigma^2\tau a(\ln (y) - \ln (S)) \big) \Big) \,\frac{\mathrm{d}y}{y} \\
+		&= \frac{e^{b\tau}}{\sqrt{2\pi \sigma^2 \tau}} \int_{0}^{\infty} \Phi(y) \exp \Big( \frac{-1}{2\sigma^2\tau} \big( (\ln (y)- \ln (S) + \sigma^2\tau a)^2 - (\sigma^2\tau a)^2 \big) \Big) \,\frac{\mathrm{d}y}{y} \\
+		&= \frac{e^{b\tau}}{\sqrt{2\pi \sigma^2 \tau}} \int_{0}^{\infty} \Phi(y) \exp \Big( \frac{-1}{2\sigma^2\tau} (\ln (y)- \ln (S) + \sigma^2\tau a)^2 + \frac{\sigma^2\tau a^2}{2} \Big) \,\frac{\mathrm{d}y}{y} \\
+		&= \frac{e^{(b + \tfrac12 \sigma^2 a^2) \tau}}{\sqrt{2\pi \sigma^2 \tau}} \int_{0}^{\infty} \Phi(y) \exp \Big( - \frac{(\ln (y)- \ln (S) + \sigma^2 a\tau)^2}{2\sigma^2\tau} \Big) \,\frac{\mathrm{d}y}{y}
+	\end{align*}
+	where it remains to find what the quantities
+	$$
+	\sigma^2 a
+	\qquad\qquad
+	b+\frac{1}{2}\sigma^2a^2
+	$$
+	represent by plugging in $a$ and $b$. The first term
+	$$
+	\sigma^2 a = - \Big( r - \frac{1}{2} \sigma^2 \Big)
+	$$
+	is trivial. The second term is
+	\begin{align*}
+		b+\frac{1}{2}\sigma^2a^2
+		&= -\frac{1}{2} \Big( \frac{r^2}{\sigma^2} + r + \frac{\sigma^2}{4} \Big) + \frac{1}{2}\sigma^2 \Big( \frac{1}{4} - \frac{r}{\sigma^2} + \frac{r^2}{\sigma^4} \Big) \\
+		&= -\frac{1}{2} \Big( \frac{r^2}{\sigma^2} + r + \frac{\sigma^2}{4} \Big) + \frac{1}{2} \Big( \frac{\sigma^2}{4} - r + \frac{r^2}{\sigma^2} \Big) \\
+		&= -\frac{1}{2}(+r) + \frac{1}{2}(-r)
+	\end{align*}
+	and now we have $I_1=I_2$ as required.
+\end{proof}
+
+\begin{proposition}
+\label{prop: i2 i3}
+	The integral representations $I_2$ and $I_3$ are equivalent.
+\end{proposition}
+\begin{proof}
+	It should not take too much convincing that
+	$$
+	y = S \exp\big((r-\frac12\sigma^2)\tau + \sigma \sqrt{\tau} z \big)
+	\qquad\qquad
+	\mathrm{d}y = y \sigma \sqrt{\tau} \,\mathrm{d}z
+	$$
+	and
+	$$
+	\ln y - \ln S - (r-\frac12\sigma^2)\tau = \sigma \sqrt{\tau} z
+	\qquad\qquad
+	\frac{\mathrm{d}y}{y \sigma \sqrt{\tau}} = \mathrm{d}z
+	$$
+	with $y\in(0,\infty)$ if and only if $z\in(-\infty,\infty)$, yielding $I_2 = I_3$ from inspection.
+\end{proof}
+
+
+
+\section{European Options}
+
+
+\subsection{Put-Call Parity}
+\begin{theorem}
+	If two portfolios $\Pi_t^+$ and $\Pi_t^-$ are guaranteed to have the same terminal price $\Pi_T^+=\Pi_T^-$, then their present values must also be equal: $\Pi_t^+=\Pi_t^-$. i.e. the law of one price.
+\end{theorem}
+\begin{proof}
+	Without loss of generality assume
+	$$
+	\Pi_t^+ - \Pi_t^- > 0
+	$$
+	and perform a proof by contradiction. Let $\kappa = e^{r\tau}(\Pi_t^+ - \Pi_t^-)$ and construct a new portfolio
+	$$
+	\Pi_t^\mathrm{arb} = \kappa e^{-r\tau} + \Pi_t^- - \Pi_t^+ = 0
+	$$
+	where we short $\Pi_t^+$ to finance holding $\Pi_t^-$ and let $\kappa e^{-r\tau}$ accrue at the risk-free rate $r$. Then at maturity $T$,
+	$$
+	\Pi_T^\mathrm{arb} = \kappa + \Pi_T^- - \Pi_T^+ = \kappa > 0
+	$$
+	which is an arbitrage. Free money!
+\end{proof}
+
+\begin{theorem}
+	Let $C$ and $P$ be vanilla options (call and put respectively) on an underlying $S$ with strike $K$ and maturity $T$. Then we have the {\emph{put-call parity}}
+	$$
+	C - P = S - Ke^{-r\tau}
+	$$
+	from a no-arbitrage replication argument. That is to say this identity holds independently of volatility and does not rely on the Black-Scholes model; it is purely a consequence of arbitrage freedom.
+\end{theorem}
+\begin{proof}
+	Consider two portfolios
+	$$
+	\Pi_t^\mathrm{A} = C_t - P_t + Ke^{-r(T-t)}
+	\qquad\qquad
+	\Pi_t^\mathrm{B} = S_t
+	$$
+	where we hold a call option with cash while shorting a put option in portfolio A, and we hold the underlying in portfolio B. Then at maturity, we have
+	$$
+	\Pi_T^\mathrm{A} = (S_T-K)^+ - (K-S_T)^+ + K = S_T = \Pi_T^\mathrm{B}
+	$$
+	which is to say that both portfolios have the same terminal outcome: owning a unit of the underlying. By the law of one price, we must have
+	$$
+	C_t - P_t + Ke^{-r(T-t)} = S_t
+	$$
+	which rearranges as required.
+\end{proof}
+
+
+\subsection{Calls and Puts}
+\begin{theorem}
+\label{thm: std vanilla option}
+	Let $C$ and $P$ be vanilla options (call and put respectively) on an underlying $S$ with strike $K$ and maturity $T$. Then we have
+	$$
+	C = S N(d_1) - Ke^{-r\tau} N(d_2)
+	$$
+	and
+	$$
+	P = Ke^{-r\tau} N(-d_2) - S N(-d_1)
+	$$
+	where
+	$$
+	d_1 = \frac{\ln(S/K) + (r + \tfrac12\sigma^2)\tau}{\sigma \sqrt{\tau}}
+	\qquad\quad
+	d_2 = d_1 - \sigma \sqrt{\tau}
+	$$
+	where $\tau = T-t$ as usual. Here,
+	$$
+	N(x) = \int_{-\infty}^x \frac{1}{\sqrt{2\pi}} e^{-u^2/2} \,\mathrm{d}u
+	\qquad\qquad
+	N'(x) = \frac{1}{\sqrt{2\pi}} e^{-x^2/2}
+	$$
+	denote the standard Gaussian cdf and pdf respectively.
+\end{theorem}
+\begin{remark}
+\label{rmk: dependencies}
+	In light of computing values later, it might be good to look at dependencies like
+	$$
+	C = C(S,t,K,T,r,\sigma)
+	\qquad\qquad
+	P = P(S,t,K,T,r,\sigma)
+	$$
+	where $S$, $t$, $K$, $T$ are explicit parameters, and $\sigma$ is implicit (i.e. implied volatility).
+\end{remark}
+\begin{proof}
+	Consider a call option with payoff
+	$$
+	\Phi(x) = (x-K)^+
+	$$
+	and consider $I_3$. Then
+	\begin{align*}
+		C
+		&= \frac{e^{-r\tau}}{\sqrt{2\pi}} \int_{-\infty}^{\infty} \Phi \Big( S \exp \big((r-\frac12\sigma^2)\tau + \sigma\sqrt{\tau} z\big) \Big) \exp \Big( -\frac{z^2}{2} \Big) \,\mathrm{d} z \\
+		&= e^{-r\tau} \int_{-\infty}^\infty \Big( S \exp \big((r-\frac12\sigma^2)\tau + \sigma\sqrt{\tau} z\big) - K \Big)^+ N'(z) \,\mathrm{d}z
+	\end{align*}
+	where integrand is only non-vanishing on
+	$$
+	S \exp \big((r-\frac12\sigma^2)\tau + \sigma\sqrt{\tau} z\big) > K
+	$$
+	or the region $z > -d_2$ after taking the logarithm. Now,
+	\begin{align*}
+		C
+		&= e^{-r\tau} \int_{-d_2}^\infty \Big( S \exp \big((r-\frac12\sigma^2)\tau + \sigma\sqrt{\tau} z\big) - K \Big) N'(z) \,\mathrm{d}z \\
+		&= e^{-r\tau} \left[ Se^{(r-\tfrac12\sigma^2)\tau} \int_{-d_2}^\infty e^{\sigma\sqrt{\tau}z}N'(z)\,\mathrm{d}z - K\int_{-d_2}^\infty N'(z)\,\mathrm{d}z \right]
+	\end{align*}
+	Using the identity
+	$$
+	\int_\alpha^\infty e^{\beta z} N'(z) \,\mathrm{d}z = e^{\beta^2/2} N(-\alpha + \beta)
+	$$
+	we obtain
+	$$
+	\int_{-d_2}^\infty e^{\sigma\sqrt{\tau}z}N'(z)\,\mathrm{d}z = e^{\tfrac12\sigma^2\tau} N(d_1)
+	$$
+	with $\alpha = -d_2$ and $\beta = \sigma\sqrt{\tau}$. Substituting this in, we have
+	$$
+	\vphantom{\int} C = e^{-r\tau} \left[ S e^{(r-\tfrac12\sigma^2)\tau} e^{\tfrac12\sigma^2\tau} N(d_1) - KN(d_2) \right]
+	$$
+	where the final simplification
+	$$
+	\vphantom{\int} e^{-r\tau} S e^{(r-\tfrac12\sigma^2)\tau} e^{\tfrac12\sigma^2\tau} = S
+	$$
+	yields the required call price. The put price follows from put-call parity.
+\end{proof}
+
+
+\subsection{Greeks}
+When deriving (\ref{eq:BS PDE}), it was important to define $\Delta$ because it was our trading strategy in hedging away the risk of the underlying price move. Based on remark \ref{rmk: dependencies}, there may be more option sensitivities. Let's define
+$$
+\Delta = \frac{\partial V}{\partial S}
+\qquad
+\Gamma = \frac{\partial^2 V}{\partial S^2}
+\qquad
+\mathcal{V} = \frac{\partial V}{\partial \sigma}
+\qquad
+\Theta = \frac{\partial V}{\partial t}
+\qquad
+\rho = \frac{\partial V}{\partial r}
+$$
+and call them the ``Greeks''. Beyond computational definitions, they decompose option risk into directional ($\Delta$), curvature ($\Gamma$), volatility ($\mathcal{V}$), temporal ($\Theta$), interest ($\rho$) components, and form the basis of practical risk management or hedging strategies.
+
+\paragraph{$\Delta$:} Delta represents the first order linear exposure of the option to movements in the underlying. In our construction of (\ref{eq:BS PDE}), we shorted an amount $\Delta$ of the underlying to offset holding the option. In doing so, we eliminated instantaneous diffusion risk and rendered the portfolio risk-free. For a European call,
+$$
+\Delta^\mathrm{call} = N(d_1)
+$$
+which approaches 0 when deep OTM and approaches 1 when deep ITM. For a European put,
+$$
+\Delta^\mathrm{put} = N(d_1) - 1
+$$
+by put-call parity. We may interpret $\Delta$ as our hedge ratio.
+
+\paragraph{$\Gamma$:} Gamma measures the curvature, i.e. the second order exposure, of the option with respect to the underlying. While continuous-time $\Delta$ hedging eliminates risk entirely, a non-zero $\Gamma$ implies $\Delta$ itself changes as $S$ evolves. Continuous-time replication requires continuous rebalancing, but in practice, hedging occurs at discrete intervals. Between rebalancing times, changes in $\Delta$ generate residual exposure proportional to $\Gamma$. Thus $\Gamma$ quantifies the instability of the $\Delta$ hedge. It is largest for ATM options and increases as maturity shortens, leading to larger replication error. We have
+$$
+\Gamma^\mathrm{call} = \frac{N'(d_1)}{S\sigma\sqrt{\tau}} = \Gamma^\mathrm{put}
+$$
+for vanilla options.
+
+\paragraph{$\mathcal{V}$:} Vega captures dependence of the option value on the volatility parameter. Since volatility is not directly observable and must be estimated or implied from market prices, misspecification of $\sigma$ introduces systematic bias in the replication strategy. In practice, implied volatility is obtained by numerically inverting the Black-Scholes formula (e.g.\ via Newton-Raphson). Vega therefore governs both calibration and exposure to volatility risk. Vega is maximal near-the-money and decreases for deep in- or out-of-the-money options. We have
+$$
+\mathcal{V}^\mathrm{call} = S N'(d_1) \sqrt{\tau} = \mathcal{V}^\mathrm{put}
+$$
+for vanilla options.
+
+\paragraph{$\Theta$:} Theta measures sensitivity to the passage of time. Within (\ref{eq:BS PDE}),
+$$
+\Theta + \frac{1}{2}\sigma^2 S^2 \Gamma + rS\Delta - rV = 0
+$$
+we see time decay is structurally linked to curvature. For long option positions, negative theta can be interpreted as the cost of maintaining positive gamma exposure. We have
+$$
+\Theta^\mathrm{call} = -\frac{S N'(d_1) \sigma}{2\sqrt{\tau}} - r K e^{-r\tau} N(d_2)
+\qquad\qquad
+\Theta^\mathrm{put} = -\frac{S N'(d_1) \sigma}{2\sqrt{\tau}} + r K e^{-r\tau} N(-d_2)
+$$
+for vanilla options.
+
+\paragraph{$\rho$:} We simply have
+$$
+\rho^\mathrm{call} = K \tau e^{-r\tau} N(d_2)
+\qquad\qquad
+\rho^\mathrm{put} = -K \tau e^{-r\tau} N(-d_2)
+$$
+for vanilla options but we will not be looking at these in detail.
+
+
+
+\end{document}
