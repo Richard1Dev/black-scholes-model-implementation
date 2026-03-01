@@ -97,7 +97,7 @@ as an explicit expression for the geometric Brownian motion.
 
 
 \section{Black-Scholes Equation}
-In the simple case of selling a vanilla call option, we can be at risk of losing money when the option is ITM. For every \$1 the underlying gains, we would lose \$1, with potentially unlimited loss. But if we own 1 unit of the underlying then, for every \$1 lost from the option, we would gain that \$1 back from the underlying. If the option drops OTM then we sell the underlying so we don't lose money on that either. This is {\emph{dynamic hedging}}.
+In the simple case of selling a vanilla call option, we can be at risk of losing money when the option is in-the-money. For every \$1 the underlying gains, we would lose \$1, with potentially unlimited loss. But if we own 1 unit of the underlying then, for every \$1 lost from the option, we would gain that \$1 back from the underlying. If the option drops out-the-money then we sell the underlying so we don't lose money on that either. This is {\emph{dynamic hedging}}.
 
 
 \subsection{Dynamic Hedging}
@@ -509,13 +509,13 @@ and call them the ``Greeks''. Beyond computational definitions, they decompose o
 $$
 \Delta^\mathrm{call} = N(d_1)
 $$
-which approaches 0 when deep OTM and approaches 1 when deep ITM. For a European put,
+which approaches 0 when deep out-the-money and approaches 1 when deep in-the-money, matching our intuition earlier when considering dynamic hedging. For a European put,
 $$
 \Delta^\mathrm{put} = N(d_1) - 1
 $$
 by put-call parity. We may interpret $\Delta$ as our hedge ratio.
 
-\paragraph{$\Gamma$:} Gamma measures the curvature, i.e. the second order exposure, of the option with respect to the underlying. While continuous-time $\Delta$ hedging eliminates risk entirely, a non-zero $\Gamma$ implies $\Delta$ itself changes as $S$ evolves. Continuous-time replication requires continuous rebalancing, but in practice, hedging occurs at discrete intervals. Between rebalancing times, changes in $\Delta$ generate residual exposure proportional to $\Gamma$. Thus $\Gamma$ quantifies the instability of the $\Delta$ hedge. It is largest for ATM options and increases as maturity shortens, leading to larger replication error. We have
+\paragraph{$\Gamma$:} Gamma measures the curvature, i.e. the second order exposure, of the option with respect to the underlying. While continuous-time $\Delta$ hedging eliminates risk entirely, a non-zero $\Gamma$ implies $\Delta$ itself changes as $S$ evolves. Continuous-time replication requires continuous rebalancing, but in practice, hedging occurs at discrete intervals. Between rebalancing times, changes in $\Delta$ generate residual exposure proportional to $\Gamma$. Thus $\Gamma$ quantifies the instability of the $\Delta$ hedge. It is largest for at-the-money options and increases as maturity shortens, leading to larger replication error. We have
 $$
 \Gamma^\mathrm{call} = \frac{N'(d_1)}{S\sigma\sqrt{\tau}} = \Gamma^\mathrm{put}
 $$
