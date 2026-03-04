@@ -38,31 +38,19 @@ A mathematical and computational implementation of the Black–Scholes model for
 
 ---
 
-### Visualisation
+### Key Visualisations
 
-- Call and put plot.
-
-![Call and Put Plot](figures/put_call.png)
-
-- Call price surface.
-
-![Call Price Surface](figures/callprice_surface.png)
-
-- Call delta surface.
+- Call delta surface showing sensitivity of option value to the underlying. The transition from 0 to 1 across moneyness is clearly visible at maturity as the sigmoid slope converges to the step function.
 
 ![Call Delta Surface](figures/calldelta_surface.png)
 
-- Sample path
+- Simulated geometric Brownian motion path with corresponding option price, delta, and gamma evolution. Demonstrates dynamic sensitivity as maturity approaches.
 
 ![Sample Path](figures/paths_ATM.png)
 
-- Unhedged PnL
+- Comparison of unhedged and delta-hedged PnL. Hedging significantly reduces variance and confirms convergence toward theoretical replication as rebalancing frequency increases.
 
-![Unhedged PnL](figures/PnL_without_hedge.png)
-
-- Hedged PnL
-
-![Hedged PnL](figures/PnL_with_hedge.png)
+![PnL Comparison](figures/PnL_with_vs_without_hedge.png)
 
 
 ---
