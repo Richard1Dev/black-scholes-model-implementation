@@ -43,7 +43,7 @@ black-scholes-model-implementation/
     - Black-Scholes formula.
     - Explicit pricing functions for vanilla options.
 - Option classes, with methods for pricing and Greeks.
-- Addition operator overriding to instantiate linear combinations of options. E.g. butterfly spread.
+- Addition operator overriding to instantiate linear combinations of vanilla calls and puts. E.g. butterfly spread.
 - Simulation of geometric Brownian motion sample paths.
 - Delta hedging strategy implementation.
 - Delta hedging analysis:
@@ -83,6 +83,7 @@ black-scholes-model-implementation/
 
 - LaTeX (MikTex, TexMaker).
 - Visual Studio Code.
+- Git.
 - Python.
 - Jupyter.
 - NumPy.
@@ -95,13 +96,13 @@ black-scholes-model-implementation/
 
 ### Outcome and Conclusion
 
-This project delivers a complete theoretical and computational implementation of the Black–Scholes framework introduced by Fischer Black and Myron Scholes. The analytical pricing formula, Greeks, and PDE derivation were translated into reusable, object-oriented code, with support for structured payoffs via linear combinations of options.
+This project delivers a complete theoretical and computational implementation of the Black–Scholes model introduced by Fischer Black and Myron Scholes. The analytical pricing formula, Greeks, and PDE derivation were translated into reusable, object-oriented code, with support for structured payoffs via linear combinations of options.
 
 Simulations of geometric Brownian motion and discrete delta hedging experiments validate key theoretical results:
 
 - PnL converges towards zero under a hedged portfolio.
 - Hedging error decreases with higher rebalancing frequency.
-- Pricing and replication are drift-independent under risk-neutral dynamics.
+- Pricing and replication are drift-independent under lognormal dynamics.
 
 Overall, the project bridges continuous-time financial theory and practical numerical implementation, providing a solid foundation for extending beyond the classical Black–Scholes model.
 
@@ -116,7 +117,7 @@ Overall, the project bridges continuous-time financial theory and practical nume
     - Implied volatility solver.
     - Empirical data, and the volatility plots (smile, skew, surface).
     - PnL skew under volatility misspecification.
-- Implementation and comparison (e.g. tractability vs computational speed) of alternate pricing methods:
+- Implementation and comparison (e.g. accuracy and tractability vs computational speed) of alternate pricing methods:
     - Explicit formula (already implmented).
     - Directly applying numerical integration of Black-Scholes formula.
     - FFT pricing.
