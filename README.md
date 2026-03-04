@@ -91,7 +91,7 @@ Overall, the project bridges continuous-time financial theory and practical nume
     - Implied volatility solver.
     - Empirical data, and the volatility plots (smile, skew, surface).
     - PnL skew under volatility misspecification.
-- Implementation and comparison of alternate pricing methods:
+- Implementation and comparison (e.g. tractability vs computational speed) of alternate pricing methods:
     - Explicit formula (already implmented).
     - Directly applying numerical integration of Black-Scholes formula.
     - FFT pricing.
