@@ -1,80 +1,94 @@
 # Black-Scholes Model Implementation
 
 
+---
+
 ### Overview
 
-A mathematical and computational implementation of the Black–Scholes model for European option pricing, including derivation sketches, closed-form solutions, simulation of underlying paths, and numerical delta hedging verification. This project bridges continuous-time financial theory and practical discrete-time implementation.
+A mathematical and computational implementation of the Black–Scholes model for European option pricing, including derivation sketches, explicit solutions, simulation of underlying paths, and numerical delta hedging verification. This project bridges continuous-time financial theory and practical discrete-time implementation.
 
 
-### Project aims
+---
 
-- Document the key Black-Scholes assumptions.
-- Sketch derivations of famous results:
-    - the Black-Scholes Equation,
-    - Feynman-Kac Formula,
-    - Black-Scholes Formula,
-    - and closed-form solutions of vanilla options.
-- Implement vanilla option pricing and sensitivities (Greeks) in Python.
-- Provide key visualisation such as sample underlying paths and the option pricing function.
-- Conduct discrete delta hedging experiments.
-- Analyse portfolio error under discrete trading.
+### Features
 
-The aim is to connect theory, computation, and financial interpretation in a unified framework.
-
-
-### Implementation
-
+- A pdf showcasing theory:
+    - Assumptions.
+    - Black-Scholes equation.
+    - Heat equation vs Feynman-Kac formula, and equivalence.
+    - Black-Scholes formula.
+    - Explicit pricing functions for vanilla options.
 - Option classes, with methods for pricing and Greeks.
 - Addition operator overriding to instantiate linear combinations of options. E.g. butterfly spread.
-- Geometric Brownian Motion simulation.
-- Discrete delta hedging engine.
-- PnL replication error analysis.
+- Simulation of geometric Brownian motion sample paths.
+- Delta hedging strategy implementation.
+- Delta hedging analysis:
+    - PnL of hedged portfolio vs unhedged control group.
+    - Convergence analysis of discretisation error vs rebalancing frequency.
+    - Confirmation of drift-independence of delta hedge.
 - Visualisations:
-    - Sample price paths
-    - Payoff functions
-    - Option price surfaces
-    - Hedging error convergence
+    - Sample underlying paths.
+    - Payoff functions.
+    - Option price and Greek surfaces.
+    - Discrete hedging approximations.
+    - PnL histograms.
+    - Hedging error convergence using log-log plots.
+    - Drift-independence.
 
 
-### Numerical Experiments
+---
 
-The project investigates:
+### Technologies
 
-- Convergence of discrete delta hedging to continuous hedging
-- Impact of:
-    - Not hedging at all (control)
-    - Rebalancing frequency
-    - Drift
-- Distribution of hedging PnL
-
-As trading frequency increases, hedging error converges in probability toward zero, numerically validating the Black–Scholes Equation.
-
-
-### Skills Demonstrated
-
-- Stochastic calculus (Ito processes)
-- Risk-neutral valuation
-- PDE methods (parabolic equations)
-- Measure change techniques
-- Numerical simulation (Monte Carlo)
-- Quantitative risk decomposition
-- Python scientific computing (NumPy, SciPy, Matplotlib)
+- LaTeX (MikTex, TexMaker).
+- Visual Studio Code.
+- Python.
+- Jupyter.
+- NumPy.
+- SciPy.
+- Matplotlib.
 
 
-### Conclusion and Project Outcomes
+---
 
+### Outcome and Conclusion
+
+This project delivers a complete theoretical and computational implementation of the Black–Scholes framework introduced by Fischer Black and Myron Scholes. The analytical pricing formula, Greeks, and PDE derivation were translated into reusable, object-oriented code, with support for structured payoffs via linear combinations of options.
+
+Simulations of geometric Brownian motion and discrete delta hedging experiments validate key theoretical results:
+
+- PnL converges towards zero under a hedged portfolio.
+- Hedging error decreases with higher rebalancing frequency.
+- Pricing and replication are drift-independent under risk-neutral dynamics.
+
+Overall, the project bridges continuous-time financial theory and practical numerical implementation, providing a solid foundation for extending beyond the classical Black–Scholes model.
 
 
 ---
 
 ### Future Extensions
 
-- Dividend-paying assets
-- Implied volatility solver
-- Local volatility models
-- Stochastic volatility (e.g., Heston)
-- Transaction costs in hedging
-- American option pricing (finite difference methods)
+- Add a pdf to mathematically analyse the theoretical discretisation error.
+- Distribution analysis of PnL (e.g. with KDE).
+- Volatility study:
+    - Implied volatility solver.
+    - Empirical data, and the volatility plots (smile, skew, surface).
+    - PnL skew under volatility misspecification.
+- Implementation and comparison of alternate pricing methods:
+    - Explicit formula (already implmented).
+    - Directly applying numerical integration of Black-Scholes formula.
+    - FFT pricing.
+    - Monte Carlo pricing.
+- Black-Scholes extended model:
+    - American option pricing (smooth pasting).
+    - Dividend-paying assets (both continuous and discrete cases).
+- Testing framework (pytest or unittest).
+- Advanced hedging implementation:
+    - Accounting for and minimising transaction costs.
+    - Minimising hedging frequency by only adjusting delta when gamma hits a threshold.
+- Exotic models:
+    - Lévy processes (fat tails and jumps).
+    - Stochastic volatility (Heston and rough Heston).
 
 
 ---
