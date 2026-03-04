@@ -38,6 +38,36 @@ A mathematical and computational implementation of the Black–Scholes model for
 
 ---
 
+### File Structure
+
+```
+black-scholes-model-implementation/
+│
+├── docs/
+│   └── bs_derivation/
+│       ├── BlackScholes_Derivation.pdf
+│       └── BlackScholes_Derivation.tex
+│
+├── figures/
+│   └── ...
+│
+├── notebooks/
+│   ├── delta_hedging_analysis.ipynb
+│   └── option_pricing_and_greeks.ipynb
+│
+├── src/
+│   ├── delta_hedge.py
+│   ├── option.py
+│   └── underlying.py
+│
+├── .gitattributes
+├── .gitignore
+└── README.md
+```
+
+
+---
+
 ### Key Visualisations
 
 - Call delta surface showing sensitivity of option value to the underlying. The transition from 0 to 1 across moneyness is clearly visible at maturity as the sigmoid slope converges to the step function.
