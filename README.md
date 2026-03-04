@@ -41,16 +41,27 @@ A mathematical and computational implementation of the Black–Scholes model for
 ### Visualisation
 
 - Call and put plot.
+
 ![Call and Put Plot](figures/put_call.png)
+
 - Call price surface.
+
 ![Call Price Surface](figures/callprice_surface.png)
+
 - Call delta surface.
+
 ![Call Delta Surface](figures/calldelta_surface.png)
+
 - Sample path
+
 ![Sample Path](figures/paths_ATM.png)
+
 - Unhedged PnL
+
 ![Unhedged PnL](figures/PnL_without_hedge.png)
+
 - Hedged PnL
+
 ![Hedged PnL](figures/PnL_with_hedge.png)
 
 
