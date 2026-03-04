@@ -11,9 +11,8 @@ A mathematical and computational implementation of the Black–Scholes model for
 black-scholes-model-implementation/
 │
 ├── docs/
-│   └── bs_derivation/
-│       ├── BlackScholes_Derivation.pdf
-│       └── BlackScholes_Derivation.tex
+│   ├── BlackScholes_Derivation.pdf
+│   └── BlackScholes_Derivation.tex
 │
 ├── figures/
 │   └── ...

@@ -1,6 +1,6 @@
 _env/*
 */__pycache__/*
 .pytest_cache/*
-docs/*/*
-!docs/*/*.pdf
-!docs/*/*.tex
+docs/*
+!docs/*.pdf
+!docs/*.tex
