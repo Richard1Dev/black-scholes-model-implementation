@@ -38,6 +38,23 @@ A mathematical and computational implementation of the Black–Scholes model for
 
 ---
 
+### Key Visualisations
+
+- Call delta surface showing sensitivity of option value to the underlying. The transition from 0 to 1 across moneyness is clearly visible at maturity as the sigmoid slope converges to the step function.
+
+![Call Delta Surface](figures/calldelta_surface.png)
+
+- Simulated geometric Brownian motion path with corresponding option price, delta, and gamma evolution. Demonstrates dynamic sensitivity as maturity approaches.
+
+![Sample Path](figures/paths_ATM.png)
+
+- Comparison of unhedged and delta-hedged PnL. Hedging significantly reduces variance and confirms convergence toward theoretical replication as rebalancing frequency increases.
+
+![PnL Comparison](figures/PnL_with_vs_without_hedge.png)
+
+
+---
+
 ### File Structure
 
 ```
@@ -64,23 +81,6 @@ black-scholes-model-implementation/
 ├── .gitignore
 └── README.md
 ```
-
-
----
-
-### Key Visualisations
-
-- Call delta surface showing sensitivity of option value to the underlying. The transition from 0 to 1 across moneyness is clearly visible at maturity as the sigmoid slope converges to the step function.
-
-![Call Delta Surface](figures/calldelta_surface.png)
-
-- Simulated geometric Brownian motion path with corresponding option price, delta, and gamma evolution. Demonstrates dynamic sensitivity as maturity approaches.
-
-![Sample Path](figures/paths_ATM.png)
-
-- Comparison of unhedged and delta-hedged PnL. Hedging significantly reduces variance and confirms convergence toward theoretical replication as rebalancing frequency increases.
-
-![PnL Comparison](figures/PnL_with_vs_without_hedge.png)
 
 
 ---
