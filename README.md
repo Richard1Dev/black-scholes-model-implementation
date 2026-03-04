@@ -26,7 +26,7 @@ A mathematical and computational implementation of the Black–Scholes model for
     - PnL of hedged portfolio vs unhedged control group.
     - Convergence analysis of discretisation error vs rebalancing frequency.
     - Confirmation of drift-independence of delta hedge.
-- Visualisations:
+- Figures:
     - Sample underlying paths.
     - Payoff functions.
     - Option price and Greek surfaces.
@@ -34,6 +34,24 @@ A mathematical and computational implementation of the Black–Scholes model for
     - PnL histograms.
     - Hedging error convergence using log-log plots.
     - Drift-independence.
+
+
+---
+
+### Visualisation
+
+- Call and put plot.
+![Call and Put Plot](figures/put_call.png)
+- Call price surface.
+![Call Price Surface](figures/callprice_surface.png)
+- Call delta surface.
+![Call Delta Surface](figures/calldelta_surface.png)
+- Sample path
+![Sample Path](figures/paths_ATM.png)
+- Unhedged PnL
+![Unhedged PnL](figures/PnL_without_hedge.png)
+- Hedged PnL
+![Hedged PnL](figures/PnL_with_hedge.png)
 
 
 ---
