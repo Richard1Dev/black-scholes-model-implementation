@@ -88,6 +88,7 @@ black-scholes-model-implementation/
 - NumPy.
 - SciPy.
 - Matplotlib.
+- Pandas.
 
 
 ---
