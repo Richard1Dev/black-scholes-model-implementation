@@ -7,6 +7,31 @@
 
 A mathematical and computational implementation of the Black–Scholes model for European option pricing, including derivation sketches, explicit solutions, simulation of underlying paths, and numerical delta hedging verification. This project bridges continuous-time financial theory and practical discrete-time implementation.
 
+```
+black-scholes-model-implementation/
+│
+├── docs/
+│   └── bs_derivation/
+│       ├── BlackScholes_Derivation.pdf
+│       └── BlackScholes_Derivation.tex
+│
+├── figures/
+│   └── ...
+│
+├── notebooks/
+│   ├── delta_hedging_analysis.ipynb
+│   └── option_pricing_and_greeks.ipynb
+│
+├── src/
+│   ├── delta_hedge.py
+│   ├── option.py
+│   └── underlying.py
+│
+├── .gitattributes
+├── .gitignore
+└── README.md
+```
+
 
 ---
 
@@ -51,36 +76,6 @@ A mathematical and computational implementation of the Black–Scholes model for
 - Comparison of unhedged and delta-hedged PnL. Hedging significantly reduces variance and confirms convergence toward theoretical replication as rebalancing frequency increases.
 
 ![PnL Comparison](figures/PnL_with_vs_without_hedge.png)
-
-
----
-
-### File Structure
-
-```
-black-scholes-model-implementation/
-│
-├── docs/
-│   └── bs_derivation/
-│       ├── BlackScholes_Derivation.pdf
-│       └── BlackScholes_Derivation.tex
-│
-├── figures/
-│   └── ...
-│
-├── notebooks/
-│   ├── delta_hedging_analysis.ipynb
-│   └── option_pricing_and_greeks.ipynb
-│
-├── src/
-│   ├── delta_hedge.py
-│   ├── option.py
-│   └── underlying.py
-│
-├── .gitattributes
-├── .gitignore
-└── README.md
-```
 
 
 ---
